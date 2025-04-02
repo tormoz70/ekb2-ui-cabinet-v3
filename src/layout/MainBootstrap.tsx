@@ -1,45 +1,36 @@
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import MainLayout from "./MainLayout";
-import {generateRoute} from "../routes";
-import {
-    setBlockingError,
-    setBlockingWaiting,
-    setCurrentSToken,
-    setLoginOpened
-} from "../redux/_main/faetures/appStateSlice";
+import {appStateSlice} from "../redux/appState/appStateSlice";
 import {EkbApiError} from "../model/EkbApiError";
 import {useEffect} from "react";
-import {loadUserMenu} from "../redux/_main/thunks/userMenuThunk";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../redux/store";
-import {currentUser} from "../redux/_main/thunks/userProfileThunk";
+import {loadUserMenu} from "../redux/userMenu/userMenuThunk";
+import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
+import {currentUser} from "../redux/userProfile/userProfileThunk";
 
 const MainBootstrap = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
-    const { userMenuState } = useSelector((state: RootState) => state);
-    const { currentSToken } = useSelector((state: RootState) => state.appStateState)
-    const { userProfileState } = useSelector((state: RootState) => state)
+    const { userMenuState } = useAppSelector((state: RootState) => state.userMenuState);
+    const { currentSToken } = useAppSelector((state: RootState) => state.appStateState)
+    const { userProfileState } = useAppSelector((state: RootState) => state)
 
     useEffect(() => {
         if(currentSToken !== undefined) {
             localStorage.setItem("stoken", currentSToken);
             if (currentSToken) {
-                dispatch(setBlockingWaiting("Загрузка профиля..."));
+                dispatch(appStateSlice.actions.setBlockingWaiting("Загрузка профиля..."));
                 dispatch(currentUser(currentSToken))
             } else {
-                dispatch(setLoginOpened(true));
+                dispatch(appStateSlice.actions.setLoginOpened(true));
             }
         }
     }, [currentSToken]);
 
     useEffect(() => {
         if(!userProfileState.isLoading) {
-            dispatch(setBlockingWaiting(undefined));
+            dispatch(appStateSlice.actions.setBlockingWaiting(undefined));
         }
         if(userProfileState.error instanceof EkbApiError) {
-            dispatch(setCurrentSToken(undefined));
-            dispatch(setBlockingError(userProfileState.error));
+            dispatch(appStateSlice.actions.setCurrentSToken(undefined));
+            dispatch(appStateSlice.actions.setBlockingError(userProfileState.error));
 
         }
         if(userProfileState.user.name) {
@@ -49,13 +40,13 @@ const MainBootstrap = () => {
 
     useEffect(() => {
         if(!userProfileState.isLoading) {
-            dispatch(setBlockingWaiting(undefined));
+            dispatch(appStateSlice.actions.setBlockingWaiting(undefined));
         }
         if(userMenuState.isLoading) {
-            dispatch(setBlockingWaiting("Загрузка основного меню пользователя..."));
+            dispatch(appStateSlice.actions.setBlockingWaiting("Загрузка основного меню пользователя..."));
         }
         if(userMenuState.error instanceof EkbApiError) {
-            dispatch(setBlockingError(userMenuState.error));
+            dispatch(appStateSlice.actions.setBlockingError(userMenuState.error));
         }
     }, [userMenuState]);
 

@@ -1,6 +1,3 @@
-// @ts-nocheck
-
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import { GridColDef } from '@mui/x-data-grid';
 import DGrid from "../../components/dgrid/DGrid";

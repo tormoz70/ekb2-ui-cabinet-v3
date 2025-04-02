@@ -1,8 +1,6 @@
 import {styled} from "@mui/material";
-import MuiAppBar, {AppBarProps as MuiAppBarProps} from '@mui/material/AppBar';
 import colorConfigs from "../../configs/colorConfigs";
 import sizeConfigs from "../../configs/sizeConfigs";
-import Sidebar from "../sidebar/Sidebar";
 
 const MainStatusBar = styled('div')(({theme}) => ({
     backgroundColor: colorConfigs.statusBar.bg,

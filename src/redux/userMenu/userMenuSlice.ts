@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit"
-import {emptyUserMenu, UserMenuState} from "../../../routes/types";
+import {emptyUserMenu, UserMenuState} from "../../routes/types";
 
 export const userMenuSlice = createSlice({
     name: "userMenuState",

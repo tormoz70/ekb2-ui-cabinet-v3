@@ -5,10 +5,10 @@ import colorConfigs from "../../configs/colorConfigs";
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../redux/store";
+import {RootState, useAppDispatch} from "../../redux/store";
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import {setNavOpened} from "../../redux/_main/faetures/appStateSlice";
+import {appStateSlice, setNavOpened} from "../../redux/appState/appStateSlice";
 
 const DrawerHeader = styled('div')(({theme}) => ({
     backgroundColor: colorConfigs.appBar.backgroundColor,
@@ -22,13 +22,13 @@ const DrawerHeader = styled('div')(({theme}) => ({
 }));
 
 const Sidebar = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const {userMenuState} = useSelector((state: RootState) => state);
     const {navOpened} = useSelector((state: RootState) => state.appStateState)
     const theme = useTheme();
 
     const handleNavClose = () => {
-        dispatch(setNavOpened(false));
+        dispatch(appStateSlice.actions.setNavOpened(false));
     };
 
     return (

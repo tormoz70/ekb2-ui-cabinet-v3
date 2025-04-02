@@ -1,6 +1,6 @@
-import React, { ReactNode, useEffect } from 'react'
-import { useDispatch } from 'react-redux';
-import {setSelectedPage} from "../redux/_main/faetures/appStateSlice";
+import { ReactNode, useEffect } from 'react'
+import {appStateSlice} from "../redux/appState/appStateSlice";
+import {useAppDispatch} from "../redux/store";
 
 type Props = {
   state?: string,
@@ -8,11 +8,11 @@ type Props = {
 }
 
 const PageWrapper = (props: Props) => {
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     if(props.state) {
-      dispatch(setSelectedPage(props.state))
+      dispatch(appStateSlice.actions.setSelectedPage(props.state))
     }
 
   }, [dispatch, props]);

@@ -10,7 +10,7 @@ export const generateRoute = (routes: RouteType[]): ReactNode => {
         route.isIndex ? (
             <Route
                 index
-                path={route.path}
+                path = {route.path ?? ""}
                 element={<PageWrapper state={route.state}>
                     {APP_PAGES.get(route.state)?.element}
                 </PageWrapper>}
@@ -18,9 +18,9 @@ export const generateRoute = (routes: RouteType[]): ReactNode => {
             />
         ) : (
             <Route
-                path={route.path}
+                path={route.path ?? ""}
                 element={
-                    <PageWrapper state={route.child ? undefined : route.state}>
+                    <PageWrapper state={route.child ? "" : route.state}>
                         {APP_PAGES.get(route.state)?.element}
                     </PageWrapper>
                 }

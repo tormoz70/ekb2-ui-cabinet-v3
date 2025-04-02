@@ -1,20 +1,21 @@
-import {loadLoadStatFailed, loadLoadStatStart, loadLoadStatSuccess} from "./loadStatSlice";
+import {loadStatSlice} from "./loadStatSlice";
 import {loadLoadStatApi} from "../../api/loadStatApi";
 import {LoadStatListResponse} from "../../ekb2-api";
+import {AppDispatch} from "../store";
 
 export const loadLoadStat: any = (page: number,
-                                  limit: number) => async (dispatch: any) => {
+                                  limit: number) => async (dispatch: AppDispatch) => {
     try {
-        dispatch(loadLoadStatStart());
+        dispatch(loadStatSlice.actions.loadLoadStatStart());
         const response: LoadStatListResponse = await loadLoadStatApi(page, limit);
         console.log("loadLoadStatApi-response: " + response);
         if(response) {
             console.log("response: ", response);
         }
-        dispatch(loadLoadStatSuccess(response));
+        dispatch(loadStatSlice.actions.loadLoadStatSuccess(response));
     } catch (error) {
         debugger;
-        dispatch(loadLoadStatFailed(error));
+        dispatch(loadStatSlice.actions.loadLoadStatFailed(error));
     }
 };
 

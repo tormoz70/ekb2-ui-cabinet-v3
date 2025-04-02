@@ -1,5 +1,5 @@
 
-export type AppState = {
+export interface AppState {
     currentSToken: string | undefined,
     selectedPage: string | undefined,
     navOpened: boolean,

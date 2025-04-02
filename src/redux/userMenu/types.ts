@@ -8,4 +8,4 @@ export interface MenuItem {
     sortOrd: bigint,
     parentId: bigint,
     children : MenuItem[]
-};
+}

@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import {AppState, emptyState} from "./types";
 
+
+
 export const appStateSlice = createSlice({
     name: "appState",
     initialState: emptyState,

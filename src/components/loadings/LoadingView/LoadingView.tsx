@@ -1,9 +1,6 @@
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
-import React, { useEffect, useState } from 'react';
 import { LoadingViewMsg, LoadingViewMsgLine, useStyles } from './style';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import Button from '@mui/material/Button';
 import {useSelector} from "react-redux";
 import {RootState} from "../../../redux/store";
 

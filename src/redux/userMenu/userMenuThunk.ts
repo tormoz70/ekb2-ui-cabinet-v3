@@ -1,11 +1,12 @@
-import { loadUserMenuApi } from "../../../api/userApi";
-import { loadUserMenuFailed, loadUserMenuStart, loadUserMenuSuccess } from "../faetures/userMenuSlice";
-import {RouteType} from "../../../routes/types";
-import {MenuItem} from "../../../model/_main/EkbMenu";
+import { loadUserMenuApi } from "../../api/userApi";
+import {userMenuSlice} from "./userMenuSlice";
+import {RouteType} from "../../routes/types";
+import {MenuItem} from "./types";
+import {AppDispatch} from "../store";
 
-export const loadUserMenu: any = () => async (dispatch: any) => {
+export const loadUserMenu: any = () => async (dispatch: AppDispatch) => {
     try {
-        dispatch(loadUserMenuStart());
+        dispatch(userMenuSlice.actions.loadUserMenuStart());
         const menuItems: MenuItem[] = await loadUserMenuApi();
         console.log("loadUserMenuApi-response: " + menuItems);
         const routes: RouteType[] = [];
@@ -40,10 +41,10 @@ export const loadUserMenu: any = () => async (dispatch: any) => {
             addItems(null, menuItems, null, routes);
             console.log("routes loaded: ", routes);
         }
-        dispatch(loadUserMenuSuccess(routes));
+        dispatch(userMenuSlice.actions.loadUserMenuSuccess(routes));
     } catch (error) {
         debugger;
-        dispatch(loadUserMenuFailed(error));
+        dispatch(userMenuSlice.actions.loadUserMenuFailed(error));
     }
 };
 

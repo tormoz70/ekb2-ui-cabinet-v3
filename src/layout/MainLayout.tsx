@@ -1,15 +1,14 @@
 import {
     Box,
-    CssBaseline, Divider,
+    CssBaseline,
     IconButton,
     Toolbar,
     Typography,
 } from "@mui/material";
 import Sidebar from "../components/sidebar/Sidebar";
 import {Outlet} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../redux/store";
-import {setLoginOpened, setMainViewportHeight, setNavOpened} from "../redux/_main/faetures/appStateSlice";
+import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
+import {appStateSlice} from "../redux/appState/appStateSlice";
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MainViewport from "../components/main/MainViewport";
@@ -25,17 +24,17 @@ import NotificationsModal from "../components/modals/NotificationsModal";
 
 
 const MainLayout = () => {
-    const dispatch = useDispatch();
-    const { navOpened } = useSelector((state: RootState) => state.appStateState)
-    const { user } = useSelector((state: RootState) => state.userProfileState)
+    const dispatch = useAppDispatch();
+    const { navOpened } = useAppSelector((state: RootState) => state.appStateState)
+    const { user } = useAppSelector((state: RootState) => state.userProfileState)
     const [ notificationsOpen, setNotificationsOpen ] = useState(false)
 
     const handleNavOpen = () => {
-        dispatch(setNavOpened(true));
+        dispatch(appStateSlice.actions.setNavOpened(true));
     };
 
     const handleLoginOpen = () => {
-        dispatch(setLoginOpened(true));
+        dispatch(appStateSlice.actions.setLoginOpened(true));
     };
     const showNotifications = () => {
         setNotificationsOpen(true);

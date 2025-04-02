@@ -1,35 +1,35 @@
 import {currentApi, loginApi} from "../../api/userApi";
-import {loginUserFailed, loginUserStart, loginUserSuccess} from "./userProfileSlice";
+import {userProfileSlice} from "./userProfileSlice";
 import {UserProfile} from "./types";
-import {setCurrentSToken} from "../appState/appStateSlice";
+import {appStateSlice} from "../appState/appStateSlice";
 import {AppDispatch} from "../store";
 
 export const loginUser: any = (userName:string, password: string) => async (dispatch: AppDispatch) => {
     try {
-        dispatch(loginUserStart());
+        dispatch(userProfileSlice.actions.loginUserStart());
         const response: UserProfile = await loginApi(userName, password);
-        dispatch(setCurrentSToken(response.user.stoken??""));
-        dispatch(loginUserSuccess(response.user));
+        dispatch(appStateSlice.actions.setCurrentSToken(response.user.stoken??""));
+        dispatch(userProfileSlice.actions.loginUserSuccess(response.user));
     } catch (error) {
         debugger;
-        dispatch(loginUserFailed(error));
+        dispatch(userProfileSlice.actions.loginUserFailed(error));
     }
 };
 
 
-export const currentUser: any = (stoken: string) => async (dispatch: any) => {
+export const currentUser: any = (stoken: string) => async (dispatch: AppDispatch) => {
     try {
-        dispatch(loginUserStart());
+        dispatch(userProfileSlice.actions.loginUserStart());
         const response: UserProfile = await currentApi(stoken);
-        dispatch(loginUserSuccess(response));
+        dispatch(userProfileSlice.actions.loginUserSuccess(response.user));
     } catch (error) {
         debugger;
-        dispatch(loginUserFailed(error));
+        dispatch(userProfileSlice.actions.loginUserFailed(error));
     }
 };
 
-export const restoreSToken: any = () => async (dispatch: any) => {
+export const restoreSToken: any = () => async (dispatch: AppDispatch) => {
     const storedSToken = localStorage.getItem("stoken");
-    dispatch(setCurrentSToken(storedSToken ?? undefined));
+    dispatch(appStateSlice.actions.setCurrentSToken(storedSToken ?? undefined));
 }
 

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import { LoadingImage, LoadingFlash, LoadingFrameWrapper, LoadingFrameTitle } from './style';
 
 interface LoadingScreenProps {

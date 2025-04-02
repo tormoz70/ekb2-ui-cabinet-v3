@@ -1,11 +1,7 @@
-// @ts-nocheck
-import React, {KeyboardEvent} from "react";
+import {KeyboardEvent} from "react";
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import { Dialog, DialogTitle, DialogContent } from "@mui/material";
-import DGrid from "../dgrid/DGrid";
 import {DataGrid, GridColDef} from "@mui/x-data-grid";
-import sizeConfigs from "../../configs/sizeConfigs";
 
 const columns1: GridColDef<(typeof rows1)[number]>[] = [
     { field: 'id', headerName: 'ID', width: 90 },

@@ -3,10 +3,10 @@
  */
 import { combineReducers } from 'redux';
 
-import appStateReducer from './_main/faetures/appStateSlice';
-import userProfileReducer from "./_main/faetures/userProfileSlice";
-import userMenuReducer from "./_main/faetures/userMenuSlice";
-import loadStatReducer from "./loadstat/faetures/loadStatSlice";
+import appStateReducer from './appState/appStateSlice';
+import userProfileReducer from "./userProfile/userProfileSlice";
+import userMenuReducer from "./userMenu/userMenuSlice";
+import loadStatReducer from "./loadstat/loadStatSlice";
 
 // export the reducers
 export default combineReducers({
