@@ -66,7 +66,7 @@ const MainLayout = () => {
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant="h6" align='left' noWrap component="div" sx={{flexGrow: 1}}>
-                            Кабинет [{user.orgId}-{user.orgName}]
+                            Кабинет [{user ? user.orgId + "-" + user.orgName : "-"}]
                         </Typography>
                         <NotificationsModal openModal={notificationsOpen} onClose={notificationsClose}/>
                         <IconButton
@@ -80,7 +80,7 @@ const MainLayout = () => {
                         </IconButton>
                         <LoginDialog/>
                         <Typography variant="h6" align='right' noWrap component="div" sx={{flexGrow: 0}}>
-                            <div>{user.login}</div>
+                            <div>{user ? user.login : "-"}</div>
                         </Typography>
                         <IconButton
                             color="inherit"

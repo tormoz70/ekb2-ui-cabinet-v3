@@ -44,7 +44,7 @@ const LoginDialog = () => {
     }
 
     useEffect(() => {
-        if (user.name) {
+        if (user && user.name) {
             console.log("userProfile loaded: ", user);
             dispatch(appStateSlice.actions.setLoginOpened(false));
         }

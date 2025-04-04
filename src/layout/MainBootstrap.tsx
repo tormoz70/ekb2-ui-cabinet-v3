@@ -8,9 +8,9 @@ import {currentUser} from "../redux/userProfile/userProfileThunk";
 const MainBootstrap = () => {
     const dispatch = useAppDispatch();
 
-    const { userMenuState } = useAppSelector((state: RootState) => state.userMenuState);
-    const { currentSToken } = useAppSelector((state: RootState) => state.appStateState)
-    const { userProfileState } = useAppSelector((state: RootState) => state)
+    const usrMenu: { isLoading, error } = useAppSelector((state: RootState) => state.userMenuState );
+    const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
+    const usrProfile: { isLoading, error, user } = useAppSelector((state: RootState) => state.userProfileState );
 
     useEffect(() => {
         if(currentSToken !== undefined) {
@@ -22,33 +22,33 @@ const MainBootstrap = () => {
                 dispatch(appStateSlice.actions.setLoginOpened(true));
             }
         }
-    }, [currentSToken]);
+    }, [dispatch, currentSToken]);
 
     useEffect(() => {
-        if(!userProfileState.isLoading) {
+        if(!usrProfile.isLoading) {
             dispatch(appStateSlice.actions.setBlockingWaiting(undefined));
         }
-        if(userProfileState.error instanceof EkbApiError) {
+        if(usrProfile.error instanceof EkbApiError) {
             dispatch(appStateSlice.actions.setCurrentSToken(undefined));
-            dispatch(appStateSlice.actions.setBlockingError(userProfileState.error));
+            dispatch(appStateSlice.actions.setBlockingError(usrProfile.error));
 
         }
-        if(userProfileState.user.name) {
+        if(usrProfile.user && usrProfile.user.name) {
             dispatch(loadUserMenu());
         }
-    }, [userProfileState]);
+    }, [dispatch, usrProfile]);
 
     useEffect(() => {
-        if(!userProfileState.isLoading) {
+        if(!usrProfile.isLoading) {
             dispatch(appStateSlice.actions.setBlockingWaiting(undefined));
         }
-        if(userMenuState.isLoading) {
+        if(usrMenu.isLoading) {
             dispatch(appStateSlice.actions.setBlockingWaiting("Загрузка основного меню пользователя..."));
         }
-        if(userMenuState.error instanceof EkbApiError) {
-            dispatch(appStateSlice.actions.setBlockingError(userMenuState.error));
+        if(usrMenu.error instanceof EkbApiError) {
+            dispatch(appStateSlice.actions.setBlockingError(usrMenu.error));
         }
-    }, [userMenuState]);
+    }, [dispatch, usrProfile.isLoading, usrMenu]);
 
     return (
         < ></>

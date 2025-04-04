@@ -4,7 +4,7 @@ import {AppState, emptyState} from "./types";
 
 
 export const appStateSlice = createSlice({
-    name: "appState",
+    name: "appStateState",
     initialState: emptyState,
     reducers: {
         setCurrentSToken: (state: AppState, action: PayloadAction<string | undefined>) => {
