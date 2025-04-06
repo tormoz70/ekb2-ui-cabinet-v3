@@ -1,4 +1,3 @@
-import { store } from "../redux/store";
 import {handleResponse} from "./handlers/responseHandler";
 import {handleError} from "./handlers/errorHandler";
 import axios from 'axios';
@@ -40,14 +39,12 @@ export async function currentApi(stoken: string) {
         .catch(handleError);
 }
 
-export async function loadUserMenuApi(onError?: (error: AxiosError) => void) {
-    const userProfile = store.getState().userProfileState;
-
-    if(userProfile.user.stoken) {
+export async function loadUserMenuApi(stoken: string | undefined, onError?: (error: AxiosError) => void) {
+    if(stoken) {
         const requestConfig = {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': userProfile.user.stoken
+                'Authorization': stoken
             }
         }
         return await axios.get(loadMenuUrl, requestConfig)

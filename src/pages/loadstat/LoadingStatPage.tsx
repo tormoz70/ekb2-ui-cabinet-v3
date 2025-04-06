@@ -1,69 +1,96 @@
 import Box from '@mui/material/Box';
 import { GridColDef } from '@mui/x-data-grid';
 import DGrid from "../../components/dgrid/DGrid";
+import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
+import {useEffect} from "react";
+import {loadLoadStat, setLoadStatFilter} from "../../redux/loadstat/loadStatThunk";
+import {LoadStatFilter} from "../../redux/loadstat/types";
+import {DateUtils} from "../../utils/DateUtils";
+import {LoadStatListResponse, LoadStatLog, SsoUser} from "../../ekb2-api";
 
-const columns: GridColDef<(typeof rows)[number]>[] = [
-  { field: 'id', headerName: 'ID', width: 90 },
+const columns: GridColDef<(LoadStatLog[])[number]>[] = [
+  { field: 'id', headerName: 'ID пакета', width: 100 },
   {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
+    field: 'date_incoming',
+    headerName: 'Дата поступления',
+    width: 170,
   },
   {
-    field: 'lastName',
-    headerName: 'Last name',
-    width: 150,
-    editable: true,
+    field: 'date_processing',
+    headerName: 'Дата обработки',
+    type: 'datetime',
+    width: 170,
   },
   {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
-    editable: true,
+    field: 'org_id',
+    headerName: 'ID поставщика',
+    type: 'string',
+    width: 80,
   },
   {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+    field: 'sess_org_id',
+    headerName: 'ID демонстратора',
+    type: 'string',
+    width: 80
+    //valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
   },
+  {
+    field: 'packet_name',
+    headerName: 'Имя xml-пакета',
+    type: 'string',
+    width: 270,
+  },
+  {
+    field: "show_date",
+    headerName: 'Дата сеанса',
+    type: 'string',
+    width: 170,
+  },
+  {
+    field: 'zip_name',
+    headerName: 'Имя zip-пакета',
+    type: 'string',
+    width: 270,
+  },
+
 ];
-
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  { id: 10, lastName: 'Roxie0', firstName: 'Harvey0', age: 65 },
-  { id: 11, lastName: 'Roxie1', firstName: 'Harvey1', age: 65 },
-  { id: 12, lastName: 'Roxie2', firstName: 'Harvey2', age: 65 },
-  { id: 13, lastName: 'Roxie3', firstName: 'Harvey3', age: 65 },
-  { id: 14, lastName: 'Roxie4', firstName: 'Harvey4', age: 65 },
-  { id: 15, lastName: 'Roxie5', firstName: 'Harvey5', age: 65 },
-  { id: 16, lastName: 'Roxie6', firstName: 'Harvey6', age: 65 },
-  { id: 17, lastName: 'Roxie7', firstName: 'Harvey7', age: 65 },
-  { id: 18, lastName: 'Roxie8', firstName: 'Harvey8', age: 65 },
-  { id: 19, lastName: 'Roxie9', firstName: 'Harvey9', age: 65 },
-  { id: 20, lastName: 'Roxie10', firstName: 'Harvey10', age: 65 },
-];
-
-
 
 export default function LoadingStatPage() {
+  const dispatch = useAppDispatch();
+  const { selectedPage, currentSToken } = useAppSelector((state: RootState) => state.appStateState);
+  const { user }: {user: SsoUser} = useAppSelector((state: RootState) => state.userProfileState);
+  const { filter }: { filter: LoadStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
+  const { response }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
+
+  useEffect(() => {
+    if(selectedPage === 'loadstat') {
+      console.log(" --- selectedPage: " + selectedPage);
+      if(!filter.page) {
+        const dateTo: Date = new Date();
+        const dateFrom: Date = DateUtils.subtractDays(dateTo, 7);
+
+        dispatch(setLoadStatFilter({
+          page: 0,
+          limit: 20,
+          forceOrgId: user.orgId,
+          regFrom: DateUtils.toString(dateFrom),
+          regTo: DateUtils.toString(dateTo)
+        } as LoadStatFilter));
+      }
+    }
+  }, [selectedPage]);
+
+  useEffect(() => {
+    if(currentSToken && filter && filter.page !== undefined) {
+      console.log(" --- loadStatFilter changed to: " + filter);
+      dispatch(loadLoadStat(currentSToken, filter));
+    }
+  }, [filter]);
 
   return (
       <Box >
         <DGrid
-            rows={rows}
+            rows={response?.data}
             columns={columns}
             initialState={{
               pagination: {

@@ -3,6 +3,7 @@ import {userProfileSlice} from "./userProfileSlice";
 import {UserProfile} from "./types";
 import {appStateSlice} from "../appState/appStateSlice";
 import {AppDispatch} from "../store";
+import {SsoUser} from "../../ekb2-api";
 
 export const loginUser: any = (userName:string, password: string) => async (dispatch: AppDispatch) => {
     try {
@@ -20,8 +21,8 @@ export const loginUser: any = (userName:string, password: string) => async (disp
 export const currentUser: any = (stoken: string) => async (dispatch: AppDispatch) => {
     try {
         dispatch(userProfileSlice.actions.loginUserStart());
-        const response: UserProfile = await currentApi(stoken);
-        dispatch(userProfileSlice.actions.loginUserSuccess(response.user));
+        const response: SsoUser = await currentApi(stoken);
+        dispatch(userProfileSlice.actions.loginUserSuccess(response));
     } catch (error) {
         debugger;
         dispatch(userProfileSlice.actions.loginUserFailed(error));

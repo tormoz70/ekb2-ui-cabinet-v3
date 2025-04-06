@@ -4,10 +4,10 @@ import {RouteType} from "../../routes/types";
 import {MenuItem} from "./types";
 import {AppDispatch} from "../store";
 
-export const loadUserMenu: any = () => async (dispatch: AppDispatch) => {
+export const loadUserMenu: any = (stoken: string) => async (dispatch: AppDispatch) => {
     try {
         dispatch(userMenuSlice.actions.loadUserMenuStart());
-        const menuItems: MenuItem[] = await loadUserMenuApi();
+        const menuItems: MenuItem[] = await loadUserMenuApi(stoken);
         console.log("loadUserMenuApi-response: " + menuItems);
         const routes: RouteType[] = [];
         if(menuItems) {

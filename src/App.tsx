@@ -1,21 +1,15 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import MainLayout from "./layout/MainLayout";
 import {generateRoute} from "./routes";
-import {RootState, useAppDispatch} from "./redux/store";
-import {useDispatch, useSelector} from "react-redux";
+import {RootState, useAppDispatch, useAppSelector} from "./redux/store";
 import {useEffect} from "react";
-import {currentUser, restoreSToken} from "./redux/userProfile/userProfileThunk";
-import {loadUserMenu} from "./redux/userMenu/userMenuThunk";
-import {setBlockingError, setBlockingWaiting, setLoginOpened} from "./redux/appState/appStateSlice";
-import {EkbApiError} from "./model/EkbApiError";
+import {restoreSToken} from "./redux/userProfile/userProfileThunk";
 
 
 function App() {
     const dispatch = useAppDispatch();
 
-    const { userMenuState } = useSelector((state: RootState) => state);
-    const { currentSToken } = useSelector((state: RootState) => state.appStateState)
-    const { userProfileState } = useSelector((state: RootState) => state)
+    const menu: { items } = useAppSelector((state: RootState) => state.userMenuState);
 
     useEffect(() => {
         //console.log("init App!!!")
@@ -28,7 +22,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<MainLayout/>}>
-              { generateRoute(userMenuState.items) }
+              { generateRoute(menu.items) }
             </Route>
           </Routes>
         </BrowserRouter>

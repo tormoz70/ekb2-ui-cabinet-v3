@@ -4,13 +4,14 @@ import {useEffect} from "react";
 import {loadUserMenu} from "../redux/userMenu/userMenuThunk";
 import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
 import {currentUser} from "../redux/userProfile/userProfileThunk";
+import {SsoUser} from "../ekb2-api";
 
 const MainBootstrap = () => {
     const dispatch = useAppDispatch();
 
     const usrMenu: { isLoading, error } = useAppSelector((state: RootState) => state.userMenuState );
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
-    const usrProfile: { isLoading, error, user } = useAppSelector((state: RootState) => state.userProfileState );
+    const usrProfile: { isLoading: boolean, error: Error, user: SsoUser } = useAppSelector((state: RootState) => state.userProfileState );
 
     useEffect(() => {
         if(currentSToken !== undefined) {
@@ -22,7 +23,7 @@ const MainBootstrap = () => {
                 dispatch(appStateSlice.actions.setLoginOpened(true));
             }
         }
-    }, [dispatch, currentSToken]);
+    }, [currentSToken]);
 
     useEffect(() => {
         if(!usrProfile.isLoading) {
@@ -33,10 +34,10 @@ const MainBootstrap = () => {
             dispatch(appStateSlice.actions.setBlockingError(usrProfile.error));
 
         }
-        if(usrProfile.user && usrProfile.user.name) {
-            dispatch(loadUserMenu());
+        if(usrProfile.user && usrProfile.user.stoken) {
+            dispatch(loadUserMenu(usrProfile.user.stoken));
         }
-    }, [dispatch, usrProfile]);
+    }, [usrProfile]);
 
     useEffect(() => {
         if(!usrProfile.isLoading) {
@@ -48,7 +49,7 @@ const MainBootstrap = () => {
         if(usrMenu.error instanceof EkbApiError) {
             dispatch(appStateSlice.actions.setBlockingError(usrMenu.error));
         }
-    }, [dispatch, usrProfile.isLoading, usrMenu]);
+    }, [usrProfile.isLoading, usrMenu]);
 
     return (
         < ></>

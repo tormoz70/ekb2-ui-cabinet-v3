@@ -1,14 +1,13 @@
-import {Box, Divider, Drawer, IconButton, List, Stack, styled, Typography, useTheme} from "@mui/material"
+import {Box, Divider, Drawer, IconButton, List, Stack, styled, useTheme} from "@mui/material"
 import sizeConfigs from "../../configs/sizeConfigs";
 import assets from "../../assets";
 import colorConfigs from "../../configs/colorConfigs";
 import SidebarItem from "./SidebarItem";
 import SidebarItemCollapse from "./SidebarItemCollapse";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState, useAppDispatch} from "../../redux/store";
+import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import {appStateSlice, setNavOpened} from "../../redux/appState/appStateSlice";
+import {appStateSlice} from "../../redux/appState/appStateSlice";
 
 const DrawerHeader = styled('div')(({theme}) => ({
     backgroundColor: colorConfigs.appBar.backgroundColor,
@@ -23,8 +22,8 @@ const DrawerHeader = styled('div')(({theme}) => ({
 
 const Sidebar = () => {
     const dispatch = useAppDispatch();
-    const {userMenuState} = useSelector((state: RootState) => state);
-    const {navOpened} = useSelector((state: RootState) => state.appStateState)
+    const usrMenu: { items } = useAppSelector((state: RootState) => state.userMenuState);
+    const { navOpened } = useAppSelector((state: RootState) => state.appStateState)
     const theme = useTheme();
 
     const handleNavClose = () => {
@@ -71,7 +70,7 @@ const Sidebar = () => {
                         overflow: 'auto'
                     }}>
                         <List disablePadding>
-                            {userMenuState.items.map((route, index) => (
+                            {usrMenu.items.map((route, index) => (
                                 route.sidebarProps ? (
                                     route.child ? (
                                         <SidebarItemCollapse item={route} isChild={false} key={index}/>

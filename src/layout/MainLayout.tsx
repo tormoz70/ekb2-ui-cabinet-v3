@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import Sidebar from "../components/sidebar/Sidebar";
 import {Outlet} from "react-router-dom";
-import {RootState, useAppDispatch, useAppSelector} from "../redux/store";
+import {RootState, useAppDispatch, useAppSelector, useUserProfileSelector} from "../redux/store";
 import {appStateSlice} from "../redux/appState/appStateSlice";
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -21,12 +21,13 @@ import MainStatusBar from "../components/main/MainStatusBar";
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import {useState} from "react";
 import NotificationsModal from "../components/modals/NotificationsModal";
+import {SsoUser} from "../ekb2-api";
 
 
 const MainLayout = () => {
     const dispatch = useAppDispatch();
-    const { navOpened } = useAppSelector((state: RootState) => state.appStateState)
-    const { user } = useAppSelector((state: RootState) => state.userProfileState)
+    const { navOpened } = useAppSelector((state: RootState) => state.appStateState);
+    const { user }: {user:SsoUser} = useAppSelector((state: RootState) => state.userProfileState);
     const [ notificationsOpen, setNotificationsOpen ] = useState(false)
 
     const handleNavOpen = () => {
