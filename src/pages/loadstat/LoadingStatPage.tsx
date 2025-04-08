@@ -2,11 +2,13 @@ import Box from '@mui/material/Box';
 import { GridColDef } from '@mui/x-data-grid';
 import DGrid from "../../components/dgrid/DGrid";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
-import {useEffect} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {loadLoadStat, setLoadStatFilter} from "../../redux/loadstat/loadStatThunk";
 import {LoadStatFilter} from "../../redux/loadstat/types";
 import {DateUtils} from "../../utils/DateUtils";
 import {LoadStatListResponse, LoadStatLog, SsoUser} from "../../ekb2-api";
+import {loadStatSlice} from "../../redux/loadstat/loadStatSlice";
+
 
 const columns: GridColDef<(LoadStatLog[])[number]>[] = [
   { field: 'id', headerName: 'ID пакета', width: 100 },
@@ -14,25 +16,27 @@ const columns: GridColDef<(LoadStatLog[])[number]>[] = [
     field: 'date_incoming',
     headerName: 'Дата поступления',
     width: 170,
+    valueFormatter: (value) => { return DateUtils.formatIsoDate(value); },
   },
   {
     field: 'date_processing',
     headerName: 'Дата обработки',
-    type: 'datetime',
     width: 170,
+    valueFormatter: (value) => { return DateUtils.formatIsoDate(value); },
   },
   {
     field: 'org_id',
     headerName: 'ID поставщика',
     type: 'string',
     width: 80,
+    description: 'ID поставщика',
   },
   {
     field: 'sess_org_id',
     headerName: 'ID демонстратора',
     type: 'string',
-    width: 80
-    //valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+    width: 80,
+    description: 'ID демонстратора',
   },
   {
     field: 'packet_name',
@@ -43,8 +47,8 @@ const columns: GridColDef<(LoadStatLog[])[number]>[] = [
   {
     field: "show_date",
     headerName: 'Дата сеанса',
-    type: 'string',
     width: 170,
+    valueFormatter: (value) => { return DateUtils.formatIsoDate(value); },
   },
   {
     field: 'zip_name',
@@ -62,20 +66,43 @@ export default function LoadingStatPage() {
   const { filter }: { filter: LoadStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
   const { response }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
 
+  const rowCountRef = useRef(response?.totalCount || 0);
+  const rowCount = useMemo(() => {
+    if (response?.totalCount !== undefined) {
+      rowCountRef.current = response.totalCount === 999999999 ? -1 : response.totalCount;
+    }
+    return rowCountRef.current;
+  }, [response?.totalCount]);
+
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 50,
+  });
+
+  const setFilter = () => {
+    const dateTo: Date = new Date();
+    const dateFrom: Date = DateUtils.subtractDays(dateTo, 7);
+    dispatch(setLoadStatFilter({
+      page: paginationModel.page,
+      limit: paginationModel.pageSize,
+      forceOrgId: user.orgId,
+      regFrom: DateUtils.toString(dateFrom),
+      regTo: DateUtils.toString(dateTo)
+    } as LoadStatFilter));
+  }
+
+  useEffect(() => {
+    if(currentSToken && filter && filter.page !== undefined) {
+      console.log(" --- loadStatFilter changed to: " + filter);
+      setFilter();
+    }
+  }, [paginationModel]);
+
   useEffect(() => {
     if(selectedPage === 'loadstat') {
       console.log(" --- selectedPage: " + selectedPage);
       if(!filter.page) {
-        const dateTo: Date = new Date();
-        const dateFrom: Date = DateUtils.subtractDays(dateTo, 7);
-
-        dispatch(setLoadStatFilter({
-          page: 0,
-          limit: 20,
-          forceOrgId: user.orgId,
-          regFrom: DateUtils.toString(dateFrom),
-          regTo: DateUtils.toString(dateTo)
-        } as LoadStatFilter));
+        setFilter();
       }
     }
   }, [selectedPage]);
@@ -87,21 +114,30 @@ export default function LoadingStatPage() {
     }
   }, [filter]);
 
+  // todo:
+  // 1. оформить headers,
+  // 2. сделать isLoading,
+  // 3. сделать сортировку на сервере
   return (
       <Box >
         <DGrid
             rows={response?.data}
             columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 50,
-                },
-              },
-            }}
-            pageSizeOptions={[5]}
+            pageSize={response?.limit}
             checkboxSelection={false}
             disableRowSelectionOnClick
+            rowCount={rowCount}
+            //loading={isLoading}
+            pageSizeOptions={[5]}
+            paginationModel={paginationModel}
+            paginationMode="server"
+            onPaginationModelChange={setPaginationModel}
+            localeText={{
+              MuiTablePagination: {
+                labelDisplayedRows: ({ from, to, count }) =>
+                    `${from} - ${to} из ${count === -1 ? `более чем ${to}` : count}`,
+              },
+            }}
         />
       </Box>
   );

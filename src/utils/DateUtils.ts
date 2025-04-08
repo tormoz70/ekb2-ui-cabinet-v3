@@ -1,4 +1,28 @@
 
+
+const _pad = function(value: number): string {
+    return value.toString().padStart(2, '0');
+}
+
+const _year = function(date: Date): string {
+    return `${date.getFullYear()}`
+}
+const _month = function(date: Date): string {
+    return `${_pad(date.getMonth() + 1)}`
+}
+const _day = function(date: Date): string {
+    return `${_pad(date.getDate())}`
+}
+const _hour = function(date: Date): string {
+    return `${_pad(date.getHours())}`
+}
+const _min = function(date: Date): string {
+    return `${_pad(date.getMinutes())}`
+}
+const _sec = function(date: Date): string {
+    return `${_pad(date.getSeconds())}`
+}
+
 export class DateUtils {
 
     static subtractDays(date: Date, days: number): Date {
@@ -7,18 +31,17 @@ export class DateUtils {
         return result;
     }
 
-    static padStart(value: number): string {
-        return value.toString().padStart(2, '0');
-    }
-
-    static toString(date: Date): string {
-        const padStart = (value: number): string =>
-            value.toString().padStart(2, '0');
-        return `${date.getFullYear()}-${padStart(date.getMonth() + 1)}-${padStart(date.getDate())}T${padStart(date.getHours())}:${padStart(date.getMinutes())}:${padStart(date.getSeconds())}`;
+    static toString(dt: Date): string {
+        return `${_year(dt)}-${_month(dt)}-${_day(dt)}T${_hour(dt)}:${_min(dt)}:${_sec(dt)}`;
     }
 
     static fromString(date: string): Date {
         return new Date(date);
+    }
+
+    static formatIsoDate(dateString: string): string {
+        const dt: Date = new Date(dateString);
+        return `${_year(dt)}.${_month(dt)}.${_day(dt)} ${_hour(dt)}:${_min(dt)}:${_sec(dt)}`;
     }
 
 }
