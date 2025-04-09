@@ -1,10 +1,10 @@
 import Box from '@mui/material/Box';
-import { GridColDef } from '@mui/x-data-grid';
+import {GridColDef, GridSortModel} from '@mui/x-data-grid';
 import DGrid from "../../components/dgrid/DGrid";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {useEffect, useMemo, useRef, useState} from "react";
-import {loadLoadStat, setLoadStatFilter} from "../../redux/loadstat/loadStatThunk";
-import {LoadStatFilter} from "../../redux/loadstat/types";
+import {loadLoadStat, setLoadStatFilter, setLoadStatSorter} from "../../redux/loadstat/loadStatThunk";
+import {LoadStatFilter, Sorter} from "../../redux/loadstat/types";
 import {DateUtils} from "../../utils/DateUtils";
 import {LoadStatListResponse, LoadStatLog, SsoUser} from "../../ekb2-api";
 import {loadStatSlice} from "../../redux/loadstat/loadStatSlice";
@@ -64,7 +64,9 @@ export default function LoadingStatPage() {
   const { selectedPage, currentSToken } = useAppSelector((state: RootState) => state.appStateState);
   const { user }: {user: SsoUser} = useAppSelector((state: RootState) => state.userProfileState);
   const { filter }: { filter: LoadStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
+  const { sorter }: { sorter: Sorter } = useAppSelector((state: RootState) => state.loadStatState);
   const { response }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
+  const { isLoading }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
 
   const rowCountRef = useRef(response?.totalCount || 0);
   const rowCount = useMemo(() => {
@@ -79,6 +81,20 @@ export default function LoadingStatPage() {
     pageSize: 50,
   });
 
+  const [sortModel, setSortModel] = useState<GridSortModel>([
+    {
+      field: 'id',
+      sort: 'desc',
+    },
+  ]);
+  const handleSortChange = (model: GridSortModel) => {
+    const modelJson = JSON.stringify(model)
+    console.log(" --- handleSortChange model: " + modelJson);
+    if (modelJson !== JSON.stringify(sortModel)) {
+      setSortModel(model);
+    }
+  };
+
   const setFilter = () => {
     const dateTo: Date = new Date();
     const dateFrom: Date = DateUtils.subtractDays(dateTo, 7);
@@ -91,12 +107,23 @@ export default function LoadingStatPage() {
     } as LoadStatFilter));
   }
 
+  const setSorter = () => {
+    dispatch(setLoadStatSorter({
+      fieldName: sortModel[0]?.field,
+      direction: sortModel[0]?.sort
+    } as Sorter));
+  }
+
   useEffect(() => {
     if(currentSToken && filter && filter.page !== undefined) {
-      console.log(" --- loadStatFilter changed to: " + filter);
       setFilter();
     }
   }, [paginationModel]);
+  useEffect(() => {
+    if(currentSToken) {
+      setSorter();
+    }
+  }, [sortModel]);
 
   useEffect(() => {
     if(selectedPage === 'loadstat') {
@@ -109,10 +136,9 @@ export default function LoadingStatPage() {
 
   useEffect(() => {
     if(currentSToken && filter && filter.page !== undefined) {
-      console.log(" --- loadStatFilter changed to: " + filter);
-      dispatch(loadLoadStat(currentSToken, filter));
+      dispatch(loadLoadStat(currentSToken, filter, sorter));
     }
-  }, [filter]);
+  }, [filter, sorter]);
 
   // todo:
   // 1. оформить headers,
@@ -127,13 +153,16 @@ export default function LoadingStatPage() {
             checkboxSelection={false}
             disableRowSelectionOnClick
             rowCount={rowCount}
-            //loading={isLoading}
-            pageSizeOptions={[5]}
-            paginationModel={paginationModel}
+            loading={isLoading}
             paginationMode="server"
+            paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
+            sortingMode="server"
+            sortModel={sortModel}
+            onSortModelChange={(model) => handleSortChange(model)}
             localeText={{
               MuiTablePagination: {
+                labelRowsPerPage: "На странице",
                 labelDisplayedRows: ({ from, to, count }) =>
                     `${from} - ${to} из ${count === -1 ? `более чем ${to}` : count}`,
               },

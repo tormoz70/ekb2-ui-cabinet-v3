@@ -5,7 +5,8 @@ export interface LoadStatState {
     error: Error | undefined,
     isLoading: boolean,
     isLoaded: boolean,
-    filter: LoadStatFilter
+    filter: LoadStatFilter,
+    sorter: Sorter
 }
 
 export const emptyLoadStat: LoadStatState = {
@@ -19,6 +20,10 @@ export const emptyLoadStat: LoadStatState = {
         forceOrgId: undefined,
         regFrom: undefined,
         regTo: undefined
+    },
+    sorter: {
+        fieldName: undefined,
+        direction: "acs"
     }
 }
 
@@ -37,5 +42,10 @@ export interface LoadStatFilter {
     ip?: string | undefined;
     loadMethod?: string | undefined;
     isTest?: string | undefined;
+
 };
 
+export interface Sorter {
+    fieldName: string | undefined;
+    direction: "acs" | "desc";
+}

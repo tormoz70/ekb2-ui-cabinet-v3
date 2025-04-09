@@ -1,7 +1,7 @@
 import {handleResponse} from "./handlers/responseHandler";
 import {handleError} from "./handlers/errorHandler";
 import axios from 'axios';
-import {LoadStatFilterState} from "../redux/loadstat/types";
+import {LoadStatFilter, Sorter} from "../redux/loadstat/types";
 
 const baseApiUrl = process.env.REACT_APP_API_URL + "/api/v1";
 const loadMenuUrl = baseApiUrl + "/loadstat/loadlog";
@@ -9,9 +9,11 @@ const loadMenuUrl = baseApiUrl + "/loadstat/loadlog";
 
 export async function loadLoadStatApi(
     stoken: string,
-    filter: LoadStatFilterState
+    filter: LoadStatFilter,
+    sorter: Sorter
 ) {
     if(stoken) {
+        const sorterJson = JSON.stringify([sorter]);
         const queryParams = [];
         queryParams.push(['page', ""+filter.page]);
         queryParams.push(['limit', ""+filter.limit]);
@@ -27,6 +29,7 @@ export async function loadLoadStatApi(
         if(filter.message) queryParams.push(['message', filter.message]);
         if(filter.loadMethod) queryParams.push(['load_method', filter.loadMethod]);
         if(filter.isTest) queryParams.push(['test', filter.isTest]);
+        if(sorter) queryParams.push(['sort', sorterJson]);
         const requestConfig = {
             headers: {
                 'Content-Type': 'application/json',
