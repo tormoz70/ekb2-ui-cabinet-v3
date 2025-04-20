@@ -6,6 +6,7 @@ const sizeConfigs = {
     statusBar: {
         height: 30
     }
+
 }
 
 export default sizeConfigs;

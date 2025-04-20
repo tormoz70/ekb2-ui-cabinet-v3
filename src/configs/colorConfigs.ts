@@ -19,7 +19,15 @@ const colorConfigs = {
         bg: "#fff",
         color: "#000"
     },
-    mainBg: colors.grey["100"]
+    mainBg: colors.grey["100"],
+
+    dbGrid: {
+        header: {
+            bg: "#506381",
+            color: "#d9dfe7",
+        }
+    }
+
 };
 
 export default colorConfigs;

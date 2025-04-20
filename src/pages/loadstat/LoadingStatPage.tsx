@@ -7,22 +7,32 @@ import {loadLoadStat, setLoadStatFilter, setLoadStatSorter} from "../../redux/lo
 import {LoadStatFilter, Sorter} from "../../redux/loadstat/types";
 import {DateUtils} from "../../utils/DateUtils";
 import {LoadStatListResponse, LoadStatLog, SsoUser} from "../../ekb2-api";
-import {loadStatSlice} from "../../redux/loadstat/loadStatSlice";
+import sizeConfigs from "../../configs/sizeConfigs";
+import DBGFilter from "../../components/dgrid/DBGFilter";
+import {DateTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
 
 const columns: GridColDef<(LoadStatLog[])[number]>[] = [
-  { field: 'id', headerName: 'ID пакета', width: 100 },
+  { field: 'id',
+    headerName: 'ID пакета',
+    width: 100,
+    disableColumnMenu: true,
+    headerClassName: 'super-app-theme--header'
+  },
   {
     field: 'date_incoming',
     headerName: 'Дата поступления',
     width: 170,
     valueFormatter: (value) => { return DateUtils.formatIsoDate(value); },
+    disableColumnMenu: true,
   },
   {
     field: 'date_processing',
     headerName: 'Дата обработки',
     width: 170,
     valueFormatter: (value) => { return DateUtils.formatIsoDate(value); },
+    disableColumnMenu: true,
   },
   {
     field: 'org_id',
@@ -30,6 +40,7 @@ const columns: GridColDef<(LoadStatLog[])[number]>[] = [
     type: 'string',
     width: 80,
     description: 'ID поставщика',
+    disableColumnMenu: true,
   },
   {
     field: 'sess_org_id',
@@ -37,24 +48,28 @@ const columns: GridColDef<(LoadStatLog[])[number]>[] = [
     type: 'string',
     width: 80,
     description: 'ID демонстратора',
+    disableColumnMenu: true,
   },
   {
     field: 'packet_name',
     headerName: 'Имя xml-пакета',
     type: 'string',
     width: 270,
+    disableColumnMenu: true,
   },
   {
     field: "show_date",
     headerName: 'Дата сеанса',
     width: 170,
     valueFormatter: (value) => { return DateUtils.formatIsoDate(value); },
+    disableColumnMenu: true,
   },
   {
     field: 'zip_name',
     headerName: 'Имя zip-пакета',
     type: 'string',
     width: 270,
+    disableColumnMenu: true,
   },
 
 ];
@@ -140,13 +155,41 @@ export default function LoadingStatPage() {
     }
   }, [filter, sorter]);
 
-  // todo:
-  // 1. оформить headers,
-  // 2. сделать isLoading,
-  // 3. сделать сортировку на сервере
+  const loadingStatFilterProps = {
+    height: 100,
+  };
+
+  interface LoadingStatFilterProps {
+    height: number,
+  };
+
+
+
+  const LoadingStatFilter = function (props: LoadingStatFilterProps) {
+    return(
+        <DBGFilter height={props.height}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DateTimePicker
+              //localeText={localConfigs.dateTimePicker}
+              ampm={false}
+              format="DD.MM.YYYY HH:mm"
+              label="Custom picker"
+              sx={{
+                '& .MuiInputBase-root': {
+                  backgroundColor: '#f5f5f5',
+                },
+              }}
+          />
+          </LocalizationProvider>
+        </DBGFilter>
+    );
+  }
+
   return (
       <Box >
+        <LoadingStatFilter height={loadingStatFilterProps.height}/>
         <DGrid
+            heightDeltaMinus={sizeConfigs.sidebar.height + sizeConfigs.statusBar.height + loadingStatFilterProps.height + 15}
             rows={response?.data}
             columns={columns}
             pageSize={response?.limit}
@@ -160,13 +203,6 @@ export default function LoadingStatPage() {
             sortingMode="server"
             sortModel={sortModel}
             onSortModelChange={(model) => handleSortChange(model)}
-            localeText={{
-              MuiTablePagination: {
-                labelRowsPerPage: "На странице",
-                labelDisplayedRows: ({ from, to, count }) =>
-                    `${from} - ${to} из ${count === -1 ? `более чем ${to}` : count}`,
-              },
-            }}
         />
       </Box>
   );
