@@ -12,9 +12,9 @@ const DBGFilter = styled('div')<DBGFilterProps>(({theme, height}) => ({
     width: `100%`,
     height: `${height}px`,
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'top',
     paddingRight: "5px",
-    justifyContent: 'right'
+    justifyContent: 'left'
 }));
 
 export default DBGFilter;

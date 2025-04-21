@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-import 'dayjs/locale/ru'; // French locale
 
 export const localConfigs = {
     dbGrid: {
@@ -93,14 +91,17 @@ export const localConfigs = {
     },
 
     dateTimePicker: {
-        months: [
-            'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
-            'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'
-        ],
+        // months: [
+        //     'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
+        //     'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'
+        // ],
         // Can override other texts too
-        previousMonth: 'Пред месяц',
-        nextMonth: 'След месяц',
+        //previousMonth: 'Пред месяц',
+        //nextMonth: 'След месяц',
+        okButtonLabel: 'OK',
+        cancelButtonLabel: 'ОТМЕНА',
+        clearButtonLabel: 'Сбросить',
+        todayButtonLabel: "Сегодня"
     },
 };
 
-dayjs.locale('ru', localConfigs.dateTimePicker);

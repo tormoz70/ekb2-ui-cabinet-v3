@@ -10,7 +10,9 @@ import {LoadStatListResponse, LoadStatLog, SsoUser} from "../../ekb2-api";
 import sizeConfigs from "../../configs/sizeConfigs";
 import DBGFilter from "../../components/dgrid/DBGFilter";
 import {DateTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {localConfigs} from "../../configs/localConfigs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import 'dayjs/locale/ru';
 
 
 const columns: GridColDef<(LoadStatLog[])[number]>[] = [
@@ -168,15 +170,16 @@ export default function LoadingStatPage() {
   const LoadingStatFilter = function (props: LoadingStatFilterProps) {
     return(
         <DBGFilter height={props.height}>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='ru'>
           <DateTimePicker
-              //localeText={localConfigs.dateTimePicker}
+              localeText={localConfigs.dateTimePicker}
               ampm={false}
               format="DD.MM.YYYY HH:mm"
               label="Custom picker"
               sx={{
                 '& .MuiInputBase-root': {
-                  backgroundColor: '#f5f5f5',
+                  backgroundColor: '#b99191',
+                  margin: '10px'
                 },
               }}
           />
