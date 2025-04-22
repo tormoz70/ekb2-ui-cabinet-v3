@@ -13,7 +13,9 @@ const DBGFilter = styled('div')<DBGFilterProps>(({theme, height}) => ({
     height: `${height}px`,
     display: 'flex',
     alignItems: 'top',
+    paddingTop: "7px",
     paddingRight: "5px",
+    paddingLeft: "5px",
     justifyContent: 'left'
 }));
 

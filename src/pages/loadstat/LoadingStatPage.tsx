@@ -13,7 +13,7 @@ import {DateTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {localConfigs} from "../../configs/localConfigs";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import 'dayjs/locale/ru';
-
+import {TextField} from "@mui/material";
 
 const columns: GridColDef<(LoadStatLog[])[number]>[] = [
   { field: 'id',
@@ -85,6 +85,9 @@ export default function LoadingStatPage() {
   const { response }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
   const { isLoading }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
 
+
+
+
   const rowCountRef = useRef(response?.totalCount || 0);
   const rowCount = useMemo(() => {
     if (response?.totalCount !== undefined) {
@@ -112,15 +115,29 @@ export default function LoadingStatPage() {
     }
   };
 
+  const defaultRegFrom0 = new Date();
+  const defaultRegFrom = DateUtils.toString(DateUtils.subtractDays(new Date(), 7));
+  const defaultRegTo = DateUtils.toString(new Date());
+
+  const [localFilter, setLocalFilter] = useState<LoadStatFilter>({
+      forceOrgId: 1,
+      regFrom: defaultRegFrom,
+      regTo: defaultRegTo,
+      orgId: '',
+      sessOrgId: '',
+      packetName: ''
+  } as LoadStatFilter);
+
+  const [valueDt, setValueDt] = useState(new Date());
+  const [error, setError] = useState(null);
+
   const setFilter = () => {
-    const dateTo: Date = new Date();
-    const dateFrom: Date = DateUtils.subtractDays(dateTo, 7);
     dispatch(setLoadStatFilter({
       page: paginationModel.page,
       limit: paginationModel.pageSize,
       forceOrgId: user.orgId,
-      regFrom: DateUtils.toString(dateFrom),
-      regTo: DateUtils.toString(dateTo)
+      regFrom: localFilter.regFrom,
+      regTo: localFilter.regTo,
     } as LoadStatFilter));
   }
 
@@ -135,7 +152,8 @@ export default function LoadingStatPage() {
     if(currentSToken && filter && filter.page !== undefined) {
       setFilter();
     }
-  }, [paginationModel]);
+  }, [paginationModel,localFilter]);
+
   useEffect(() => {
     if(currentSToken) {
       setSorter();
@@ -158,31 +176,102 @@ export default function LoadingStatPage() {
   }, [filter, sorter]);
 
   const loadingStatFilterProps = {
-    height: 100,
+    height: 150,
   };
 
-  interface LoadingStatFilterProps {
+  interface LoadingStatFilterFormProps {
     height: number,
-  };
+  }
 
 
 
-  const LoadingStatFilter = function (props: LoadingStatFilterProps) {
+  const LoadingStatFilterForm = function (props: LoadingStatFilterFormProps) {
     return(
-        <DBGFilter height={props.height}>
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='ru'>
-          <DateTimePicker
-              localeText={localConfigs.dateTimePicker}
-              ampm={false}
-              format="DD.MM.YYYY HH:mm"
-              label="Custom picker"
-              sx={{
-                '& .MuiInputBase-root': {
-                  backgroundColor: '#b99191',
-                  margin: '10px'
-                },
-              }}
-          />
+
+
+        <DBGFilter height={props.height} >
+          <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale='ru'
+              disableValidation
+          >
+              <Box sx={{
+                display: 'block',
+                flexDirection: 'column',
+              }}>
+                <Box
+                    justifyContent="space-between"
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                      gap: 1
+                    }}>
+                  <DateTimePicker
+                    localeText={localConfigs.dateTimePicker}
+                    ampm={false}
+                    format="DD.MM.YYYY HH:mm"
+                    label="Получен с"
+                    // value={valueDt}
+                    // onChange={(newValue) => setValueDt(new Date(newValue))}
+
+                  />
+                  <DateTimePicker
+                      localeText={localConfigs.dateTimePicker}
+                      ampm={false}
+                      format="DD.MM.YYYY HH:mm"
+                      label="Получен по"
+                      //value={localFilter.regTo}
+                  />
+                  <TextField
+                      label="Поставщик"
+                      name="Пакет"
+                      value={"ekb"}
+                      // onChange={handleChange}
+                      // error={!!errors.password}
+                      // helperText={errors.password}
+                      //fullWidth
+                      //required
+                  />
+                  <TextField
+                      label="Демонстратор"
+                      name="Пакет"
+                      // value={formData.password}
+                      // onChange={handleChange}
+                      // error={!!errors.password}
+                      // helperText={errors.password}
+                      //fullWidth
+                      //required
+                  />
+                </Box>
+                <Box sx={{
+                  mt: 1,
+                  mb: 1,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  gap: 1
+                }}>
+                  <TextField
+                      label="Пакет"
+                      name="Пакет"
+                      // value={formData.password}
+                      // onChange={handleChange}
+                      // error={!!errors.password}
+                      // helperText={errors.password}
+                      //fullWidth
+                      //required
+                  />
+                  <TextField
+                      label="Zip-пакет"
+                      name="Пакет"
+                      // value={formData.password}
+                      // onChange={handleChange}
+                      // error={!!errors.password}
+                      // helperText={errors.password}
+                      //required
+                  />
+                </Box>
+              </Box>
           </LocalizationProvider>
         </DBGFilter>
     );
@@ -190,7 +279,7 @@ export default function LoadingStatPage() {
 
   return (
       <Box >
-        <LoadingStatFilter height={loadingStatFilterProps.height}/>
+        <LoadingStatFilterForm height={loadingStatFilterProps.height}/>
         <DGrid
             heightDeltaMinus={sizeConfigs.sidebar.height + sizeConfigs.statusBar.height + loadingStatFilterProps.height + 15}
             rows={response?.data}
