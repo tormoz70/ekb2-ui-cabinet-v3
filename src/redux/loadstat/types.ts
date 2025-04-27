@@ -17,7 +17,6 @@ export const emptyLoadStat: LoadStatState = {
     filter: {
         page: undefined,
         limit: undefined,
-        forceOrgId: undefined,
         regFrom: undefined,
         regTo: undefined
     },
@@ -30,7 +29,6 @@ export const emptyLoadStat: LoadStatState = {
 export interface LoadStatFilter {
     page: number | undefined;
     limit: number | undefined;
-    forceOrgId: bigint | undefined;
     regFrom: string | undefined;
     regTo: string  | undefined;
     orgId?: string | undefined;

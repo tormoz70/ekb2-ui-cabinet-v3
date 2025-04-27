@@ -91,10 +91,10 @@ export const localConfigs = {
     },
 
     dateTimePicker: {
-        // months: [
-        //     'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
-        //     'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'
-        // ],
+        months: [
+            'Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн',
+            'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'
+        ],
         // Can override other texts too
         //previousMonth: 'Пред месяц',
         //nextMonth: 'След месяц',

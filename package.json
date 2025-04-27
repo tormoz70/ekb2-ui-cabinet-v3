@@ -25,6 +25,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "axios": "^1.7.2",
     "babel-plugin-styled-components": "^2.1.4",
+    "date-fns": "^4.1.0",
     "env-cmd": "^10.1.0",
     "eslint": "^9.23.0",
     "react": "^19.1.0",

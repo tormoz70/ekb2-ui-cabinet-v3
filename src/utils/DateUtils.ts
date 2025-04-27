@@ -31,8 +31,11 @@ export class DateUtils {
         return result;
     }
 
-    static toString(dt: Date): string {
-        return `${_year(dt)}-${_month(dt)}-${_day(dt)}T${_hour(dt)}:${_min(dt)}:${_sec(dt)}`;
+    static toString(dt: Date | undefined): string |undefined {
+        if(dt) {
+            return `${_year(dt)}-${_month(dt)}-${_day(dt)}T${_hour(dt)}:${_min(dt)}:${_sec(dt)}`;
+        }
+        return undefined;
     }
 
     static fromString(date: string): Date {
