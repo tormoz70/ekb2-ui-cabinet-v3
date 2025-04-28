@@ -2,18 +2,17 @@ import Box from '@mui/material/Box';
 import {GridColDef, GridSortModel} from '@mui/x-data-grid';
 import DGrid from "../../components/dgrid/DGrid";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
-import {ChangeEvent, useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {loadLoadStat, setLoadStatFilter, setLoadStatSorter} from "../../redux/loadstat/loadStatThunk";
-import {LoadStatFilter, Sorter} from "../../redux/loadstat/types";
+import {useEffect, useMemo, useRef, useState} from "react";
+import {
+  loadLoadStat,
+  setLoadStatPagginator,
+  setLoadStatSorter
+} from "../../redux/loadstat/loadStatThunk";
+import {LoadStatFilter, Pagginator, Sorter} from "../../redux/loadstat/types";
 import {DateUtils} from "../../utils/DateUtils";
-import {LoadStatListResponse, LoadStatLog, SsoUser} from "../../ekb2-api";
+import {LoadStatListResponse, LoadStatLog} from "../../ekb2-api";
 import sizeConfigs from "../../configs/sizeConfigs";
-import DBGFilter from "../../components/dgrid/DBGFilter";
-import {DateTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
-import {localConfigs} from "../../configs/localConfigs";
-import {TextField} from "@mui/material";
-import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import {DelayedLaunch} from "../../utils/DelayedLaunch";
+import LoadingStatFilterForm from "./LoadingStatFilter";
 
 const columns: GridColDef<(LoadStatLog[])[number]>[] = [
   { field: 'id',
@@ -79,8 +78,8 @@ const columns: GridColDef<(LoadStatLog[])[number]>[] = [
 export default function LoadingStatPage() {
   const dispatch = useAppDispatch();
   const { selectedPage, currentSToken } = useAppSelector((state: RootState) => state.appStateState);
-  const { user }: {user: SsoUser} = useAppSelector((state: RootState) => state.userProfileState);
   const { filter }: { filter: LoadStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
+  const { pagginator }: { pagginator: Pagginator } = useAppSelector((state: RootState) => state.loadStatState);
   const { sorter }: { sorter: Sorter } = useAppSelector((state: RootState) => state.loadStatState);
   const { response }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
   const { isLoading }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
@@ -112,42 +111,11 @@ export default function LoadingStatPage() {
   };
 // ------------------------------------------------------------------------------
 
-  const delayedSetFilter: DelayedLaunch = new DelayedLaunch(() => {
-    setFilter();
-  }, 2000)
-
-  interface LocalFilter {
-    regFrom: Date;
-    regTo?: Date | undefined;
-    orgId?: string | undefined;
-    sessPrntOrgId?: string | undefined;
-    sessOrgId?: string | undefined;
-    packetName?: string | undefined;
-    curPstate?: string | undefined;
-    message?: string | undefined;
-    ip?: string | undefined;
-    loadMethod?: string | undefined;
-    isTest?: string | undefined;
-  };
-
-  const defaultFilter = {
-    regFrom: DateUtils.subtractDays(new Date(), 7),
-    regTo: new Date(),
-  } as LocalFilter;
-
-  const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
-
-  const [orgIdSelected, setOrgIdSelected] = useState('');
-  const orgIdHandleChange = useCallback((e) => setOrgIdSelected(e.target.value), []);
-
-  const setFilter = () => {
-    dispatch(setLoadStatFilter({
+  const setPagginator = () => {
+    dispatch(setLoadStatPagginator({
       page: paginationModel.page,
       limit: paginationModel.pageSize,
-      regFrom: DateUtils.toString(localFilter.regFrom),
-      regTo: DateUtils.toString(localFilter.regTo),
-      orgId: localFilter.orgId
-    } as LoadStatFilter));
+    } as Pagginator));
   }
 
   const setSorter = () => {
@@ -158,9 +126,8 @@ export default function LoadingStatPage() {
   }
 
   useEffect(() => {
-    if(currentSToken && filter && filter.page !== undefined) {
-      //setFilter();
-      delayedSetFilter.runDelayed();
+    if(currentSToken && pagginator && pagginator.page !== undefined) {
+      setPagginator();
     }
   }, [paginationModel]);
 
@@ -173,113 +140,26 @@ export default function LoadingStatPage() {
   useEffect(() => {
     if(selectedPage === 'loadstat') {
       console.log(" --- selectedPage: " + selectedPage);
-      if(!filter.page) {
-        setFilter();
+      if(!pagginator.page) {
+        setPagginator();
       }
     }
   }, [selectedPage]);
 
   useEffect(() => {
-    if(currentSToken && filter && filter.page !== undefined) {
-      dispatch(loadLoadStat(currentSToken, filter, sorter));
+    if(currentSToken && pagginator && pagginator.page !== undefined) {
+      dispatch(loadLoadStat(currentSToken, filter, pagginator, sorter));
     }
-  }, [filter, sorter]);
+  }, [filter, pagginator, sorter]);
 
   const loadingStatFilterProps = {
     height: 150,
   };
 
-  interface LoadingStatFilterFormProps {
-    height: number,
-  }
 
-  const LoadingStatFilterForm = function (props: LoadingStatFilterFormProps) {
-    return(
-
-
-        <DBGFilter height={props.height} >
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <Box sx={{
-                display: 'block',
-                flexDirection: 'column',
-              }}>
-                <Box
-                    justifyContent="space-between"
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      gap: 1
-                    }}>
-                  <DateTimePicker
-                    localeText={localConfigs.dateTimePicker}
-                    ampm={false}
-                    format="dd.MM.yyyy HH:mm"
-                    label="Получен с"
-                    value={localFilter.regFrom}
-                    onChange={(newValue) => setLocalFilter({
-                      ...localFilter,
-                      regFrom: newValue
-                    } as LocalFilter)}
-                  />
-                  <DateTimePicker
-                      localeText={localConfigs.dateTimePicker}
-                      ampm={false}
-                      format="dd.MM.yyyy HH:mm"
-                      label="Получен по"
-                      value={localFilter.regTo}
-                      onChange={(newValue) => setLocalFilter({
-                          ...localFilter,
-                          regTo: newValue
-                        } as LocalFilter)
-                      }
-                  />
-                  <TextField
-                      label="Поставщик"
-                      name="orgIdInput"
-                      value={orgIdSelected}
-                      onChange={orgIdHandleChange}
-                  />
-                  <TextField
-                      label="Демонстратор"
-                      name="Пакет"
-                  />
-                </Box>
-                <Box sx={{
-                  mt: 1,
-                  mb: 1,
-                  display: 'flex',
-                  flexDirection: 'row',
-                  gap: 1
-                }}>
-                  <TextField
-                      label="Пакет"
-                      name="Пакет"
-                      // value={formData.password}
-                      // onChange={handleChange}
-                      // error={!!errors.password}
-                      // helperText={errors.password}
-                      //fullWidth
-                      //required
-                  />
-                  <TextField
-                      label="Zip-пакет"
-                      name="Пакет"
-                      // value={formData.password}
-                      // onChange={handleChange}
-                      // error={!!errors.password}
-                      // helperText={errors.password}
-                      //required
-                  />
-                </Box>
-              </Box>
-          </LocalizationProvider>
-        </DBGFilter>
-    );
-  }
 
   return (
-      <Box >
+      <Box>
         <LoadingStatFilterForm height={loadingStatFilterProps.height}/>
         <DGrid
             heightDeltaMinus={sizeConfigs.sidebar.height + sizeConfigs.statusBar.height + loadingStatFilterProps.height + 15}

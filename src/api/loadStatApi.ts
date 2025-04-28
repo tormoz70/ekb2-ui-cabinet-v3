@@ -1,7 +1,7 @@
 import {handleResponse} from "./handlers/responseHandler";
 import {handleError} from "./handlers/errorHandler";
 import axios from 'axios';
-import {LoadStatFilter, Sorter} from "../redux/loadstat/types";
+import {LoadStatFilter, Pagginator, Sorter} from "../redux/loadstat/types";
 
 const baseApiUrl = process.env.REACT_APP_API_URL + "/api/v1";
 const loadMenuUrl = baseApiUrl + "/loadstat/loadlog";
@@ -10,14 +10,14 @@ const loadMenuUrl = baseApiUrl + "/loadstat/loadlog";
 export async function loadLoadStatApi(
     stoken: string,
     filter: LoadStatFilter,
+    pagginator: Pagginator,
     sorter: Sorter
 ) {
     if(stoken) {
         const sorterJson = JSON.stringify([sorter]);
         const queryParams = [];
-        queryParams.push(['page', ""+filter.page]);
-        queryParams.push(['limit', ""+filter.limit]);
-        queryParams.push(['force_org_id', "" + filter.forceOrgId]);
+        queryParams.push(['page', ""+pagginator.page]);
+        queryParams.push(['limit', ""+pagginator.limit]);
         queryParams.push(['reg_from', filter.regFrom]);
         queryParams.push(['reg_to', filter.regTo]);
         if(filter.orgId) queryParams.push(['org_id', filter.orgId]);

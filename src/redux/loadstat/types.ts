@@ -6,6 +6,7 @@ export interface LoadStatState {
     isLoading: boolean,
     isLoaded: boolean,
     filter: LoadStatFilter,
+    pagginator: Pagginator,
     sorter: Sorter
 }
 
@@ -15,20 +16,20 @@ export const emptyLoadStat: LoadStatState = {
     isLoading: false,
     isLoaded: false,
     filter: {
-        page: undefined,
-        limit: undefined,
         regFrom: undefined,
         regTo: undefined
+    },
+    pagginator: {
+        page: undefined,
+        limit: undefined,
     },
     sorter: {
         fieldName: undefined,
         direction: "acs"
     }
-}
+};
 
 export interface LoadStatFilter {
-    page: number | undefined;
-    limit: number | undefined;
     regFrom: string | undefined;
     regTo: string  | undefined;
     orgId?: string | undefined;
@@ -46,5 +47,10 @@ export interface LoadStatFilter {
 export interface Sorter {
     fieldName: string | undefined;
     direction: "acs" | "desc";
-}
+};
+
+export interface Pagginator {
+    page: number | undefined;
+    limit: number | undefined;
+};
 

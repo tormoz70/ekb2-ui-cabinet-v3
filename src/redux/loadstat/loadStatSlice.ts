@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
-import {emptyLoadStat, LoadStatFilter, LoadStatState, Sorter} from "./types";
+import {emptyLoadStat, LoadStatFilter, LoadStatState, Pagginator, Sorter} from "./types";
 import {LoadStatListResponse} from "../../ekb2-api";
 
 export const loadStatSlice = createSlice({
@@ -23,6 +23,9 @@ export const loadStatSlice = createSlice({
         },
         setFilter: (state: LoadStatState, action: PayloadAction<LoadStatFilter>) => {
             state.filter = action.payload;
+        },
+        setPagginator: (state: LoadStatState, action: PayloadAction<Pagginator>) => {
+            state.pagginator = action.payload;
         },
         setSorter: (state: LoadStatState, action: PayloadAction<Sorter>) => {
             state.sorter = action.payload;

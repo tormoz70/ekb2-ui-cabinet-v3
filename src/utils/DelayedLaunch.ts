@@ -1,6 +1,6 @@
 
 export interface DelayedDelegate {
-    (): void;
+    (value: string): void;
 }
 
 
@@ -14,13 +14,13 @@ export class DelayedLaunch {
         this.delay = delay;
     }
 
-    public runDelayed(): void {
+    public runDelayed(value: string): void {
         if (this.timeoutId) {
             clearTimeout(this.timeoutId);
         }
         this.timeoutId = setTimeout(() => {
             if(this.delayedDelegate){
-                this.delayedDelegate()
+                this.delayedDelegate(value)
             }
         }, this.delay);
     }
