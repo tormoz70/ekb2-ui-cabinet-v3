@@ -11,7 +11,6 @@ import {LoadStatFilter} from "../../redux/loadstat/types";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {DelayedLaunch} from "../../utils/DelayedLaunch";
 
-
 export interface LocalFilter {
     regFrom: Date;
     regTo?: Date | undefined;
@@ -35,8 +34,12 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
 
     const delayedSetFilter: DelayedLaunch = new DelayedLaunch((value: string) => {
-
+        setLocalFilter({
+            ...localFilter,
+            orgId: value
+        } as LocalFilter)
     }, 1000)
+
 
     const defaultFilter = {
         regFrom: DateUtils.subtractDays(new Date(), 7),
@@ -100,10 +103,9 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             label="Поставщик"
                             name="orgIdInput"
                             value={localFilter.orgId}
-                            onChange={(e) => setLocalFilter({
-                                ...localFilter,
-                                orgId: e.target.value
-                            } as LocalFilter)}
+                            onChange={(e) => {
+                                delayedSetFilter.runDelayed(e.target.value);
+                            }}
                         />
                         <TextField
                             label="Демонстратор"
