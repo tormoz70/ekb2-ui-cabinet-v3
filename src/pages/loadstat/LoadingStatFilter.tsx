@@ -14,51 +14,52 @@ import {DelayedLaunch} from "../../utils/DelayedLaunch";
 export interface LocalFilter {
     regFrom: Date;
     regTo?: Date | undefined;
-    orgId?: string | undefined;
-    sessPrntOrgId?: string | undefined;
-    sessOrgId?: string | undefined;
-    packetName?: string | undefined;
-    curPstate?: string | undefined;
-    message?: string | undefined;
-    ip?: string | undefined;
-    loadMethod?: string | undefined;
-    isTest?: string | undefined;
+    orgId: string;
+    sessPrntOrgId: string;
+    sessOrgId: string;
+    packetName: string;
+    curPstate: string;
+    message: string;
+    ip: string;
+    loadMethod: string;
+    isTest: string;
 };
 
 export interface LoadingStatFilterFormProps {
     height: number,
 };
 
+const delayedSetFilter: DelayedLaunch = new DelayedLaunch();
+
 export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps) {
     const dispatch = useAppDispatch();
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
 
-    const delayedSetFilter: DelayedLaunch = new DelayedLaunch((value: string) => {
-        setLocalFilter({
-            ...localFilter,
-            orgId: value
-        } as LocalFilter)
-    }, 1000)
-
-
     const defaultFilter = {
         regFrom: DateUtils.subtractDays(new Date(), 7),
         regTo: new Date(),
+        orgId: '',
+        sessPrntOrgId: '',
+        sessOrgId: '',
+        packetName: '',
+        curPstate: '',
+        message: '',
+        ip: '',
+        loadMethod: '',
+        isTest: '',
     } as LocalFilter;
 
     const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
 
-    const setFilter = () => {
-        dispatch(setLoadStatFilter({
-            regFrom: DateUtils.toString(localFilter.regFrom),
-            regTo: DateUtils.toString(localFilter.regTo),
-            orgId: localFilter.orgId
-        } as LoadStatFilter));
-    }
-
     useEffect(() => {
-        if(currentSToken) {
-            setFilter();
+        if(currentSToken && localFilter.regFrom) {
+            delayedSetFilter.runDelayed(() => {
+                dispatch(setLoadStatFilter({
+                    regFrom: DateUtils.toString(localFilter.regFrom),
+                    regTo: DateUtils.toString(localFilter.regTo),
+                    orgId: localFilter.orgId
+                } as LoadStatFilter));
+            }, 1000)
         }
     }, [localFilter]);
 
@@ -104,7 +105,10 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             name="orgIdInput"
                             value={localFilter.orgId}
                             onChange={(e) => {
-                                delayedSetFilter.runDelayed(e.target.value);
+                                setLocalFilter({
+                                    ...localFilter,
+                                    orgId: e.target.value
+                                } as LocalFilter)
                             }}
                         />
                         <TextField

@@ -5,6 +5,9 @@ import {AppDispatch} from "../store";
 import {LoadStatFilter, Pagginator, Sorter} from "./types";
 
 export const loadLoadStat: any = (stoken: string, filter: LoadStatFilter, pagginator: Pagginator, sorter: Sorter) => async (dispatch: AppDispatch) => {
+    if(filter.regFrom === undefined) {
+        return;
+    }
     try {
         dispatch(loadStatSlice.actions.loadLoadStatStart());
         const response: LoadStatListResponse = await loadLoadStatApi(stoken, filter, pagginator, sorter);
