@@ -2,17 +2,14 @@ import {GridColDef, GridSortModel} from '@mui/x-data-grid';
 import DGrid from "../../components/dgrid/DGrid";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {useEffect, useMemo, useRef, useState} from "react";
-import {
-  loadLoadStat,
-  setLoadStatPagginator,
-  setLoadStatSorter
-} from "../../redux/loadstat/loadStatThunk";
-import {LoadStatFilter, Pagginator, Sorter} from "../../redux/loadstat/types";
 import {DateUtils} from "../../utils/DateUtils";
-import {LoadStatListResponse, LoadStatLog} from "../../ekb2-api";
+import {DataStatListResponse, DataStatSessions} from "../../ekb2-api";
 import sizeConfigs from "../../configs/sizeConfigs";
+import {Pagginator, Sorter} from "../../redux/types";
+import {loadDataStat, setDataStatPagginator, setDataStatSorter} from "../../redux/datastat/dataStatThunk";
+import {DataStatFilter} from "../../redux/datastat/types";
 
-const columns: GridColDef<(LoadStatLog[])[number]>[] = [
+const columns: GridColDef<(DataStatSessions[])[number]>[] = [
   { field: 'id',
     headerName: 'ID пакета',
     width: 100,
@@ -86,18 +83,18 @@ const columns: GridColDef<(LoadStatLog[])[number]>[] = [
 
 ];
 
-export interface LoadingStatGridProps {
+export interface DataStatGridProps {
   topPadding: number,
 };
 
-export default function LoadingStatGrid(props: LoadingStatGridProps) {
+export default function DataStatGrid(props: DataStatGridProps) {
   const dispatch = useAppDispatch();
   const { selectedPage, currentSToken } = useAppSelector((state: RootState) => state.appStateState);
-  const { filter }: { filter: LoadStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
+  const { filter }: { filter: DataStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
   const { pagginator }: { pagginator: Pagginator } = useAppSelector((state: RootState) => state.loadStatState);
   const { sorter }: { sorter: Sorter } = useAppSelector((state: RootState) => state.loadStatState);
-  const { response }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
-  const { isLoading }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
+  const { response }: { response: DataStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
+  const { isLoading }: { response: DataStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
 
 // --- pagination & sorting
   const rowCountRef = useRef(response?.totalCount || 0);
@@ -127,14 +124,14 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
 // ------------------------------------------------------------------------------
 
   const setPagginator = () => {
-    dispatch(setLoadStatPagginator({
+    dispatch(setDataStatPagginator({
       page: paginationModel.page,
       limit: paginationModel.pageSize,
     } as Pagginator));
   }
 
   const setSorter = () => {
-    dispatch(setLoadStatSorter({
+    dispatch(setDataStatSorter({
       fieldName: sortModel[0]?.field,
       direction: sortModel[0]?.sort
     } as Sorter));
@@ -153,7 +150,7 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
   }, [sortModel]);
 
   useEffect(() => {
-    if(selectedPage === 'loadstat') {
+    if(selectedPage === 'datastat') {
       console.log(" --- selectedPage: " + selectedPage);
       if(!pagginator.page) {
         setPagginator();
@@ -163,7 +160,7 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
 
   useEffect(() => {
     if(currentSToken && pagginator && pagginator.page !== undefined) {
-      dispatch(loadLoadStat(currentSToken, filter, pagginator, sorter));
+      dispatch(loadDataStat(currentSToken, filter, pagginator, sorter));
     }
   }, [filter, pagginator, sorter]);
 

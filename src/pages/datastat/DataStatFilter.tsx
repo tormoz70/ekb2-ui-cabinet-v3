@@ -16,40 +16,28 @@ import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 interface LocalFilter {
-    regFrom: Date;
-    regTo?: Date | undefined;
+    showDateFrom: Date;
+    showDateTo?: Date | undefined;
     orgId: string;
-    sessPrntOrgId: string;
-    sessOrgId: string;
-    packetName: string;
-    curPstate: string;
-    message: string;
-    ip: string;
-    loadMethod: string;
-    isTest: string;
+    sroomId: number;
+    film: string;
 };
 
 const defaultFilter = {
-    regFrom: DateUtils.subtractDays(new Date(), 7),
-    regTo: new Date(),
+    showDateFrom: DateUtils.subtractDays(new Date(), 7),
+    showDateTo: DateUtils.addDays(new Date(), 2),
     orgId: '',
-    sessPrntOrgId: '',
-    sessOrgId: '',
-    packetName: '',
-    curPstate: '',
-    message: '',
-    ip: '',
-    loadMethod: '',
-    isTest: '',
+    sroomId: 0,
+    film: '',
 } as LocalFilter;
 
-export interface LoadingStatFilterFormProps {
+export interface DataStatFilterFormProps {
     height: number,
 };
 
 const delayedSetFilter: DelayedLaunch = new DelayedLaunch();
 
-export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps) {
+export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const dispatch = useAppDispatch();
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
     const { isLoading }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
@@ -58,15 +46,14 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
     const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
 
     useEffect(() => {
-        if(currentSToken && localFilter.regFrom) {
+        if(currentSToken && localFilter.showDateFrom) {
             delayedSetFilter.runDelayed(() => {
                 dispatch(setLoadStatFilter({
-                    regFrom: DateUtils.toString(localFilter.regFrom),
-                    regTo: DateUtils.toString(localFilter.regTo),
+                    regFrom: DateUtils.toString(localFilter.showDateFrom),
+                    regTo: DateUtils.toString(localFilter.showDateTo),
                     orgId: localFilter.orgId,
-                    sessOrgId: localFilter.sessOrgId,
-                    packetName: localFilter.packetName,
-                    curPstate: localFilter.curPstate,
+                    sroomId: localFilter.sroomId,
+                    film: localFilter.film,
                 } as LoadStatFilter));
             }, 1000)
         }
@@ -105,8 +92,8 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             localeText={localConfigs.dateTimePicker}
                             ampm={false}
                             format="dd.MM.yyyy HH:mm"
-                            label="Получен с"
-                            value={localFilter.regFrom}
+                            label="Сеанс с"
+                            value={localFilter.showDateFrom}
                             onChange={(newValue) => setLocalFilter({
                                 ...localFilter,
                                 regFrom: newValue
@@ -116,15 +103,15 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             localeText={localConfigs.dateTimePicker}
                             ampm={false}
                             format="dd.MM.yyyy HH:mm"
-                            label="Получен по"
-                            value={localFilter.regTo}
+                            label="Сеанс по"
+                            value={localFilter.showDateTo}
                             onChange={(newValue) => setLocalFilter({
                                 ...localFilter,
                                 regTo: newValue
                             } as LocalFilter)}
                         />
                         <TextField
-                            label="Поставщик"
+                            label="Демонстратор"
                             name="orgIdInput"
                             value={localFilter.orgId}
                             onChange={(e) => {
@@ -135,46 +122,28 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             }}
                         />
                         <TextField
-                            label="Демонстратор"
-                            name="sessOrgIdInput"
-                            value={localFilter.sessOrgId}
+                            label="Кинозал"
+                            name="sroomIdInput"
+                            value={localFilter.sroomId}
                             onChange={(e) => {
                                 setLocalFilter({
                                     ...localFilter,
-                                    sessOrgId: e.target.value
+                                    sroomId: e.target.value
                                 } as LocalFilter)
                             }}
                         />
                         <TextField
-                            label="Пакет"
-                            name="packetNameInput"
-                            value={localFilter.packetName}
+                            label="Фильм"
+                            name="filmInput"
+                            value={localFilter.film}
                             onChange={(e) => {
                                 setLocalFilter({
                                     ...localFilter,
-                                    packetName: e.target.value
-                                } as LocalFilter)
-                            }}
-                        />
-                        <TextField
-                            label="Состояние"
-                            name="curPstateFilter"
-                            value={localFilter.curPstate}
-                            onChange={(e) => {
-                                setLocalFilter({
-                                    ...localFilter,
-                                    curPstate: e.target.value
+                                    film: e.target.value
                                 } as LocalFilter)
                             }}
                         />
                     </Box>
-                {/*    <Box sx={{*/}
-                {/*        mt: 1,*/}
-                {/*        display: 'flex',*/}
-                {/*        flexDirection: 'row',*/}
-                {/*        gap: 1*/}
-                {/*    }}>*/}
-                {/*    </Box>*/}
                 </Box>
             </LocalizationProvider>
         </DBGFilter>

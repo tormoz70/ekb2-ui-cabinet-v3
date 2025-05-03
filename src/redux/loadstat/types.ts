@@ -1,4 +1,5 @@
 import {LoadStatListResponse} from "../../ekb2-api";
+import {Pagginator, Sorter} from "../types";
 
 export interface LoadStatState {
     response: LoadStatListResponse | undefined,
@@ -42,15 +43,5 @@ export interface LoadStatFilter {
     loadMethod?: string | undefined;
     isTest?: string | undefined;
 
-};
-
-export interface Sorter {
-    fieldName: string | undefined;
-    direction: "acs" | "desc";
-};
-
-export interface Pagginator {
-    page: number | undefined;
-    limit: number | undefined;
 };
 

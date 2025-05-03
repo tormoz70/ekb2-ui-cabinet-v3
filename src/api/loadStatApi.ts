@@ -1,7 +1,8 @@
 import {handleResponse} from "./handlers/responseHandler";
 import {handleError} from "./handlers/errorHandler";
 import axios from 'axios';
-import {LoadStatFilter, Pagginator, Sorter} from "../redux/loadstat/types";
+import {LoadStatFilter} from "../redux/loadstat/types";
+import {Pagginator, Sorter} from "../redux/types";
 
 const baseApiUrl = process.env.REACT_APP_API_URL + "/api/v1";
 const loadMenuUrl = baseApiUrl + "/loadstat/loadlog";

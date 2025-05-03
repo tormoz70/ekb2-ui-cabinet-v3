@@ -31,6 +31,12 @@ export class DateUtils {
         return result;
     }
 
+    static addDays(date: Date, days: number): Date {
+        const result = new Date(date);
+        result.setDate(date.getDate() + days);
+        return result;
+    }
+
     static toString(dt: Date | undefined): string |undefined {
         if(dt) {
             return `${_year(dt)}-${_month(dt)}-${_day(dt)}T${_hour(dt)}:${_min(dt)}:${_sec(dt)}`;
@@ -45,6 +51,10 @@ export class DateUtils {
     static formatIsoDate(dateString: string): string {
         const dt: Date = new Date(dateString);
         return `${_year(dt)}.${_month(dt)}.${_day(dt)} ${_hour(dt)}:${_min(dt)}:${_sec(dt)}`;
+    }
+    static formatIsoDateMin(dateString: string): string {
+        const dt: Date = new Date(dateString);
+        return `${_year(dt)}.${_month(dt)}.${_day(dt)} ${_hour(dt)}:${_min(dt)}`;
     }
 
 }

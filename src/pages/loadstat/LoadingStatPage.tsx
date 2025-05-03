@@ -6,8 +6,8 @@ import LoadingStatGrid from "./LoadingStatGrid";
 export default function LoadingStatPage() {
   return (
       <Box>
-        <LoadingStatFilterForm height={150}/>
-        <LoadingStatGrid/>
+        <LoadingStatFilterForm height={90}/>
+        <LoadingStatGrid topPadding={90}/>
       </Box>
   );
 }

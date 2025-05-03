@@ -4040,62 +4040,62 @@ export interface DataStatListResponse {
  */
 export interface DataStatSessions {
   /** rec_uid */
-  recUid?: string;
+  recUid: string;
   /**
    * sess_id
    * @format int64
    */
-  sessId?: number;
+  sessId: number;
   /** sesstitle_uid */
-  sessTitleUid?: string;
+  sessTitleUid: string;
   /** Регион */
-  regionRev?: string;
+  regionRev: string;
   /** Город */
-  nasPunktRev?: string;
+  nasPunktRev: string;
   /** ID кинотеатра */
-  orgId?: string;
+  orgId: string;
   /** Кинотеатр */
-  org?: string;
+  org: string;
   /** part_key */
-  partKey?: string;
+  partKey: string;
   /** Кинозал */
-  sroomName?: string;
+  sroomName: string;
   /** Сеанс */
-  sessTitle?: string;
+  sessTitle: string;
   /** Фильм (по реестру) */
-  filmNameOrig?: string;
+  filmNameOrig: string;
   /** ПУ */
-  puNum?: string;
+  puNum: string;
   /** ПУ (по реестру) */
-  puNumFound?: string;
+  puNumFound: string;
   /**
    * Дата/Время
    * @format date-time
    */
-  showDate?: string;
+  showDate: string;
   /**
    * Кол-во билетов
    * @format int64
    */
-  tckts?: number;
+  tckts: number;
   /**
    * Кол-во возвратов
    * @format int64
    */
-  tcktsStorn?: number;
+  tcktsStorn: number;
   /**
    * Кол-во беспл. билетов
    * @format int64
    */
-  tcktsFree?: number;
+  tcktsFree: number;
   /** Скидка, руб */
-  summDisc?: number;
+  summDisc: number;
   /** Выручка, руб */
-  summ?: number;
+  summ: number;
   /** Средняя цена, руб */
-  priceFact?: number;
+  priceFact: number;
   /** Фестивальный */
-  festival?: boolean;
+  festival: boolean;
 }
 
 export interface DataStatTickets {
