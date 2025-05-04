@@ -6,7 +6,7 @@ import {Pagginator, Sorter} from "../types";
 import {dataStatApi} from "../../api/dataStatApi";
 
 export const loadDataStat: any = (stoken: string, filter: DataStatFilter, pagginator: Pagginator, sorter: Sorter) => async (dispatch: AppDispatch) => {
-    if(filter.showDateFrom === undefined) {
+    if(filter.showDateFrom === undefined || filter.showDateFrom === "") {
         return;
     }
     try {

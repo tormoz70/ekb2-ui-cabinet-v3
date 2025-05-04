@@ -6,14 +6,15 @@ import {localConfigs} from "../../configs/localConfigs";
 import {TextField} from "@mui/material";
 import {DateUtils} from "../../utils/DateUtils";
 import {useEffect, useState} from "react";
-import {setLoadStatFilter} from "../../redux/loadstat/loadStatThunk";
 import {LoadStatFilter} from "../../redux/loadstat/types";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {DelayedLaunch} from "../../utils/DelayedLaunch";
-import {LoadStatListResponse} from "../../ekb2-api";
+import {LoadStatListResponse, SsoUser} from "../../ekb2-api";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
+import {setDataStatFilter} from "../../redux/datastat/dataStatThunk";
+import {DataStatFilter} from "../../redux/datastat/types";
 
 interface LocalFilter {
     showDateFrom: Date;
@@ -22,14 +23,6 @@ interface LocalFilter {
     sroomId: number;
     film: string;
 };
-
-const defaultFilter = {
-    showDateFrom: DateUtils.subtractDays(new Date(), 7),
-    showDateTo: DateUtils.addDays(new Date(), 2),
-    orgId: '',
-    sroomId: 0,
-    film: '',
-} as LocalFilter;
 
 export interface DataStatFilterFormProps {
     height: number,
@@ -40,21 +33,30 @@ const delayedSetFilter: DelayedLaunch = new DelayedLaunch();
 export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const dispatch = useAppDispatch();
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
-    const { isLoading }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
+    const { user }: {user: SsoUser} = useAppSelector((state: RootState) => state.userProfileState)
+    const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.loadStatState);
     const [refreshKey, setRefreshKey] = useState(0);
+
+    const defaultFilter = {
+        showDateFrom: DateUtils.subtractDays(new Date(), 7),
+        showDateTo: DateUtils.addDays(new Date(), 2),
+        orgId: user.orgId,
+        sroomId: 0,
+        film: '',
+    } as LocalFilter;
 
     const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
 
     useEffect(() => {
         if(currentSToken && localFilter.showDateFrom) {
             delayedSetFilter.runDelayed(() => {
-                dispatch(setLoadStatFilter({
-                    regFrom: DateUtils.toString(localFilter.showDateFrom),
-                    regTo: DateUtils.toString(localFilter.showDateTo),
-                    orgId: localFilter.orgId,
+                dispatch(setDataStatFilter({
+                    showDateFrom: DateUtils.toString(localFilter.showDateFrom),
+                    showDateTo: DateUtils.toString(localFilter.showDateTo),
+                    orgId: localFilter.orgId || user.orgId,
                     sroomId: localFilter.sroomId,
                     film: localFilter.film,
-                } as LoadStatFilter));
+                } as DataStatFilter));
             }, 1000)
         }
     }, [localFilter, refreshKey]);

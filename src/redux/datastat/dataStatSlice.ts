@@ -1,11 +1,11 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
-import {emptyLoadStat, DataStatFilter, DataStatState} from "./types";
+import {emptyDataStat, DataStatFilter, DataStatState} from "./types";
 import {DataStatListResponse} from "../../ekb2-api";
 import {Pagginator, Sorter} from "../types";
 
 export const dataStatSlice = createSlice({
     name: "loadStatState",
-    initialState: emptyLoadStat,
+    initialState: emptyDataStat,
     reducers: {
         loadDataStatStart(state: DataStatState) {
             state.isLoading = true;

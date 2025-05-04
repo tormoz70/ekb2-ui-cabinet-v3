@@ -7,6 +7,7 @@ import appStateReducer from './appState/appStateSlice';
 import userProfileReducer from "./userProfile/userProfileSlice";
 import userMenuReducer from "./userMenu/userMenuSlice";
 import loadStatReducer from "./loadstat/loadStatSlice";
+import dataStatReducer from "./datastat/dataStatSlice";
 
 // export the reducers
 export default combineReducers({
@@ -15,5 +16,6 @@ export default combineReducers({
     userProfileState: userProfileReducer,
     userMenuState: userMenuReducer,
 // application reducers:
-    loadStatState: loadStatReducer
+    loadStatState: loadStatReducer,
+    dataStatState: dataStatReducer
 })

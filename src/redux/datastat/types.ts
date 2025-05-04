@@ -11,7 +11,7 @@ export interface DataStatState {
     sorter: Sorter
 }
 
-export const emptyLoadStat: DataStatState = {
+export const emptyDataStat: DataStatState = {
     response: undefined,
     error: undefined,
     isLoading: false,

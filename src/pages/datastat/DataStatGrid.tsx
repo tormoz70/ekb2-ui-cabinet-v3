@@ -10,29 +10,30 @@ import {loadDataStat, setDataStatPagginator, setDataStatSorter} from "../../redu
 import {DataStatFilter} from "../../redux/datastat/types";
 
 const columns: GridColDef<(DataStatSessions[])[number]>[] = [
-  { field: 'id',
-    headerName: 'ID пакета',
+  { field: 'sessId',
+    headerName: 'ID сеанса',
     width: 100,
     disableColumnMenu: true,
     headerClassName: 'super-app-theme--header'
   },
   {
-    field: 'date_incoming',
-    headerName: 'Дата поступления',
-    width: 170,
-    valueFormatter: (value) => { return DateUtils.formatIsoDate(value); },
-    disableColumnMenu: true,
-  },
-  {
-    field: 'org_id',
-    headerName: 'ID поставщика',
+    field: 'regionRev',
+    headerName: 'Регион',
     type: 'string',
-    width: 80,
-    description: 'ID поставщика',
+    width: 180,
+    description: 'Регион',
     disableColumnMenu: true,
   },
   {
-    field: 'sess_org_id',
+    field: 'nasPunktRev',
+    headerName: 'Город',
+    type: 'string',
+    width: 150,
+    description: 'Город',
+    disableColumnMenu: true,
+  },
+  {
+    field: 'orgId',
     headerName: 'ID демонстратора',
     type: 'string',
     width: 80,
@@ -40,45 +41,109 @@ const columns: GridColDef<(DataStatSessions[])[number]>[] = [
     disableColumnMenu: true,
   },
   {
-    field: 'packet_name',
-    headerName: 'Имя xml-пакета',
-    type: 'string',
-    width: 270,
-    disableColumnMenu: true,
-  },
-  {
-    field: 'cur_pstate',
-    headerName: 'Состояние',
+    field: 'org',
+    headerName: 'Демонстратор',
     type: 'string',
     width: 120,
+    description: 'Демонстратор',
     disableColumnMenu: true,
   },
   {
-    field: "show_date",
-    headerName: 'Дата сеанса',
-    width: 170,
-    valueFormatter: (value) => { return DateUtils.formatIsoDateMin(value); },
-    disableColumnMenu: true,
-  },
-  {
-    field: 'zip_name',
-    headerName: 'Имя zip-пакета',
+    field: 'sroomName',
+    headerName: 'Кинозал',
     type: 'string',
-    width: 270,
+    width: 100,
+    description: 'Кинозал',
     disableColumnMenu: true,
   },
   {
-    field: 'date_processing',
-    headerName: 'Дата обработки',
+    field: 'showDate',
+    headerName: 'Дата/время сеанса',
+    type: 'date',
     width: 170,
     valueFormatter: (value) => { return DateUtils.formatIsoDate(value); },
     disableColumnMenu: true,
+    description: 'Дата/время сеанса',
   },
   {
-    field: 'ip',
-    headerName: 'IP адрес',
-    width: 120,
+    field: 'puNum',
+    headerName: 'Номер ПУ',
+    type: 'string',
+    width: 100,
+    description: 'Номер ПУ',
     disableColumnMenu: true,
+  },
+  {
+    field: 'puNumFound',
+    headerName: 'Номер ПУ (по реестру)',
+    type: 'string',
+    width: 100,
+    description: 'Номер ПУ (по реестру)',
+    disableColumnMenu: true,
+  },
+  {
+    field: 'sessTitle',
+    headerName: 'Название сеанса',
+    type: 'string',
+    width: 180,
+    description: 'Название сеанса',
+    disableColumnMenu: true,
+  },
+  {
+    field: 'filmNameOrig',
+    headerName: 'Название фильма',
+    type: 'string',
+    width: 180,
+    description: 'Название фильма по реестру',
+    disableColumnMenu: true,
+  },
+  {
+    field: 'tckts',
+    headerName: 'Билетов',
+    type: 'number',
+    width: 70,
+    disableColumnMenu: true,
+    description: 'Кол-во проданных билетов',
+  },
+  {
+    field: 'tcktsStorn',
+    headerName: 'Возвратов',
+    type: 'number',
+    width: 70,
+    disableColumnMenu: true,
+    description: 'Кол-во возвращенных билетов',
+  },
+  {
+    field: 'tcktsFree',
+    headerName: 'Бесплатных',
+    type: 'number',
+    width: 70,
+    disableColumnMenu: true,
+    description: 'Кол-во бесплатных билетов',
+  },
+  {
+    field: 'summ',
+    headerName: 'Выручка',
+    type: 'number',
+    width: 70,
+    disableColumnMenu: true,
+    description: 'Сумма выручки',
+  },
+  {
+    field: 'summDisc',
+    headerName: 'Скидка',
+    type: 'number',
+    width: 70,
+    disableColumnMenu: true,
+    description: 'Сумма скидки',
+  },
+  {
+    field: 'priceFact',
+    headerName: 'Сред. цена',
+    type: 'number',
+    width: 70,
+    disableColumnMenu: true,
+    description: 'Средняя цена билета',
   },
 
 ];
@@ -90,11 +155,11 @@ export interface DataStatGridProps {
 export default function DataStatGrid(props: DataStatGridProps) {
   const dispatch = useAppDispatch();
   const { selectedPage, currentSToken } = useAppSelector((state: RootState) => state.appStateState);
-  const { filter }: { filter: DataStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
-  const { pagginator }: { pagginator: Pagginator } = useAppSelector((state: RootState) => state.loadStatState);
-  const { sorter }: { sorter: Sorter } = useAppSelector((state: RootState) => state.loadStatState);
-  const { response }: { response: DataStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
-  const { isLoading }: { response: DataStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
+  const { filter }: { filter: DataStatFilter } = useAppSelector((state: RootState) => state.dataStatState);
+  const { pagginator }: { pagginator: Pagginator } = useAppSelector((state: RootState) => state.dataStatState);
+  const { sorter }: { sorter: Sorter } = useAppSelector((state: RootState) => state.dataStatState);
+  const { response }: { response: DataStatListResponse } = useAppSelector((state: RootState) => state.dataStatState);
+  const { isLoading }: { response: DataStatListResponse } = useAppSelector((state: RootState) => state.dataStatState);
 
 // --- pagination & sorting
   const rowCountRef = useRef(response?.totalCount || 0);

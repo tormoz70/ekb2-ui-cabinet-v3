@@ -4040,7 +4040,7 @@ export interface DataStatListResponse {
  */
 export interface DataStatSessions {
   /** rec_uid */
-  recUid: string;
+  id: string;
   /**
    * sess_id
    * @format int64
