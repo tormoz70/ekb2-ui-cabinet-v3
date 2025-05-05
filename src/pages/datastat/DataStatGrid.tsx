@@ -125,6 +125,7 @@ const columns: GridColDef<(DataStatSessions[])[number]>[] = [
     field: 'summ',
     headerName: 'Выручка',
     type: 'number',
+    valueFormatter: (params) => `$${params.value.toFixed(2)}`,
     width: 70,
     disableColumnMenu: true,
     description: 'Сумма выручки',
