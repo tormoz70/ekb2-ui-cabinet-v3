@@ -20,7 +20,7 @@ const AsyncAutocomplete = ({ label, fetchOptions, value, onChange }) => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const results = await fetchOptions(inputValue);
+                const results = fetchOptions(inputValue);
                 if (active) {
                     setOptions(results);
                 }
@@ -64,7 +64,7 @@ const AsyncAutocomplete = ({ label, fetchOptions, value, onChange }) => {
                 <TextField
                     {...params}
                     label={label}
-                    endAdornment: {
+                    endadornment={
                         <>
                             {loading ? <CircularProgress color="inherit" size={20} /> : null}
                             {params.InputProps.endAdornment}

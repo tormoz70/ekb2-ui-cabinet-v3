@@ -15,6 +15,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {setDataStatFilter} from "../../redux/datastat/dataStatThunk";
 import {DataStatFilter} from "../../redux/datastat/types";
+import AsyncAutocomplete from "../../components/combobox/AsyncAutocomplete";
+import {listsApi} from "../../api/listsApi";
 
 interface LocalFilter {
     showDateFrom: Date;
@@ -36,6 +38,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const { user }: {user: SsoUser} = useAppSelector((state: RootState) => state.userProfileState)
     const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.loadStatState);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [selectedFilm, setSelectedFilm] = useState(null);
 
     const defaultFilter = {
         showDateFrom: DateUtils.subtractDays(new Date(), 7),
@@ -63,6 +66,20 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
 
     const handleRefresh = () => {
         setRefreshKey(prevKey => prevKey + 1);
+    };
+
+    const fetchFilms = async (query) => {
+        try {
+            const response = await listsApi(currentSToken, "films", query);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            return data.users || [];
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            return [];
+        }
     };
 
     return(
@@ -134,16 +151,22 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                                 } as LocalFilter)
                             }}
                         />
-                        <TextField
+                        {/*<TextField*/}
+                        {/*    label="Фильм"*/}
+                        {/*    name="filmInput"*/}
+                        {/*    value={localFilter.film}*/}
+                        {/*    onChange={(e) => {*/}
+                        {/*        setLocalFilter({*/}
+                        {/*            ...localFilter,*/}
+                        {/*            film: e.target.value*/}
+                        {/*        } as LocalFilter)*/}
+                        {/*    }}*/}
+                        {/*/>*/}
+                        <AsyncAutocomplete
                             label="Фильм"
-                            name="filmInput"
-                            value={localFilter.film}
-                            onChange={(e) => {
-                                setLocalFilter({
-                                    ...localFilter,
-                                    film: e.target.value
-                                } as LocalFilter)
-                            }}
+                            fetchOptions={fetchFilms}
+                            value={selectedFilm}
+                            onChange={setSelectedFilm}
                         />
                     </Box>
                 </Box>
