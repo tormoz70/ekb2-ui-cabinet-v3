@@ -20,9 +20,9 @@ const AsyncAutocomplete = ({ label, fetchOptions, value, onChange }) => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const results = fetchOptions(inputValue);
+                const results = await fetchOptions(inputValue);
                 if (active) {
-                    setOptions(results);
+                    setOptions(results.data);
                 }
             } catch (error) {
                 console.error('Error fetching options:', error);
@@ -49,11 +49,12 @@ const AsyncAutocomplete = ({ label, fetchOptions, value, onChange }) => {
 
     return (
         <Autocomplete
+            sx={{ width: 300 }}
             open={open}
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            getOptionLabel={(option) => option.label || ''}
+            getOptionLabel={(option) => option.name || ''}
             options={options}
             loading={loading}
             value={value}
@@ -63,6 +64,7 @@ const AsyncAutocomplete = ({ label, fetchOptions, value, onChange }) => {
             renderInput={(params) => (
                 <TextField
                     {...params}
+
                     label={label}
                     endadornment={
                         <>
@@ -72,6 +74,7 @@ const AsyncAutocomplete = ({ label, fetchOptions, value, onChange }) => {
                     }
                 />
             )}
+            noOptionsText="Нет результатов"
         />
     );
 };

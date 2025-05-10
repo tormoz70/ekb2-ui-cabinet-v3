@@ -5,26 +5,16 @@ import {Pagginator, Sorter} from "../redux/types";
 import {DataStatFilter} from "../redux/datastat/types";
 
 const baseApiUrl = process.env.REACT_APP_API_URL + "/api/v1";
-const loadMenuUrl = baseApiUrl + "/datastat";
+const loadMenuUrl = baseApiUrl + "/films";
 
 
-export async function dataStatApi(
+export async function filmsApi(
     stoken: string,
-    filter: DataStatFilter,
-    pagginator: Pagginator,
-    sorter: Sorter
+    filter: string,
 ) {
     if(stoken) {
-        const sorterJson = JSON.stringify([sorter]);
         const queryParams = [];
-        queryParams.push(['page', ""+pagginator.page]);
-        queryParams.push(['limit', ""+pagginator.limit]);
-        queryParams.push(['show_date_from', filter.showDateFrom]);
-        queryParams.push(['show_date_to', filter.showDateTo]);
-        queryParams.push(['org_id', filter.orgId]);
-        if(filter.sroomId) queryParams.push(['sroom_id', filter.sroomId]);
-        if(filter.selectedPuId) queryParams.push(['selected_pu_id', filter.selectedPuId]);
-        if(sorter) queryParams.push(['sort', sorterJson]);
+        queryParams.push(['filter', filter]);
         const requestConfig = {
             headers: {
                 'Content-Type': 'application/json',

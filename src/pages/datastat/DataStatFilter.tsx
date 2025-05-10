@@ -6,24 +6,23 @@ import {localConfigs} from "../../configs/localConfigs";
 import {TextField} from "@mui/material";
 import {DateUtils} from "../../utils/DateUtils";
 import {useEffect, useState} from "react";
-import {LoadStatFilter} from "../../redux/loadstat/types";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {DelayedLaunch} from "../../utils/DelayedLaunch";
-import {LoadStatListResponse, SsoUser} from "../../ekb2-api";
+import {ListCommonDto, SsoUser} from "../../ekb2-api";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {setDataStatFilter} from "../../redux/datastat/dataStatThunk";
 import {DataStatFilter} from "../../redux/datastat/types";
 import AsyncAutocomplete from "../../components/combobox/AsyncAutocomplete";
-import {listsApi} from "../../api/listsApi";
+import {filmsApi} from "../../api/filmsApi";
 
 interface LocalFilter {
     showDateFrom: Date;
     showDateTo?: Date | undefined;
     orgId: string;
     sroomId: number;
-    film: string;
+    selectedPuId: number | undefined;
 };
 
 export interface DataStatFilterFormProps {
@@ -38,14 +37,14 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const { user }: {user: SsoUser} = useAppSelector((state: RootState) => state.userProfileState)
     const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.loadStatState);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [selectedFilm, setSelectedFilm] = useState(null);
+    const [selectedFilm, setSelectedFilm] = useState<ListCommonDto>(null);
 
     const defaultFilter = {
         showDateFrom: DateUtils.subtractDays(new Date(), 7),
         showDateTo: DateUtils.addDays(new Date(), 2),
         orgId: user.orgId,
         sroomId: 0,
-        film: '',
+        selectedPuId: undefined,
     } as LocalFilter;
 
     const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
@@ -58,7 +57,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                     showDateTo: DateUtils.toString(localFilter.showDateTo),
                     orgId: localFilter.orgId || user.orgId,
                     sroomId: localFilter.sroomId,
-                    film: localFilter.film,
+                    selectedPuId: localFilter.selectedPuId,
                 } as DataStatFilter));
             }, 1000)
         }
@@ -70,18 +69,21 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
 
     const fetchFilms = async (query) => {
         try {
-            const response = await listsApi(currentSToken, "films", query);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            return data.users || [];
+            return await filmsApi(currentSToken, query);
         } catch (error) {
             console.error('Error fetching users:', error);
             return [];
         }
     };
 
+    const handleFilmChange = (selected: ListCommonDto) => {
+        setSelectedFilm(selected)
+        setLocalFilter({
+            ...localFilter,
+            selectedPuId: selected ? selected.id : undefined
+        } as LocalFilter)
+        console.log('Selected IDs:', selected);
+    };
     return(
         <DBGFilter height={props.height} >
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -107,6 +109,13 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                         >
                             {isLoading ? <CircularProgress size={24} /> : ''}
                         </Button>
+                        <AsyncAutocomplete
+                            label="Фильм"
+                            fetchOptions={fetchFilms}
+                            value={selectedFilm}
+                            onChange={handleFilmChange}
+                        />
+
                         <DateTimePicker
                             localeText={localConfigs.dateTimePicker}
                             ampm={false}
@@ -162,12 +171,6 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                         {/*        } as LocalFilter)*/}
                         {/*    }}*/}
                         {/*/>*/}
-                        <AsyncAutocomplete
-                            label="Фильм"
-                            fetchOptions={fetchFilms}
-                            value={selectedFilm}
-                            onChange={setSelectedFilm}
-                        />
                     </Box>
                 </Box>
             </LocalizationProvider>

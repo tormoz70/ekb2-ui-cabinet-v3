@@ -35,6 +35,6 @@ export interface DataStatFilter {
     showDateTo: string;
     orgId?: string;
     sroomId?: number;
-    film?: string;
+    selectedPuId?: number;
 };
 
