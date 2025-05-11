@@ -16,12 +16,13 @@ import {setDataStatFilter} from "../../redux/datastat/dataStatThunk";
 import {DataStatFilter} from "../../redux/datastat/types";
 import AsyncAutocomplete from "../../components/combobox/AsyncAutocomplete";
 import {filmsApi} from "../../api/filmsApi";
+import {sroomsApi} from "../../api/sroomsApi";
 
 interface LocalFilter {
     showDateFrom: Date;
     showDateTo?: Date | undefined;
-    orgId: string;
-    sroomId: number;
+    orgId: number;
+    selectedSRoomId: number | undefined;
     selectedPuId: number | undefined;
 };
 
@@ -38,12 +39,13 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.loadStatState);
     const [refreshKey, setRefreshKey] = useState(0);
     const [selectedFilm, setSelectedFilm] = useState<ListCommonDto>(null);
+    const [selectedSRoom, setSelectedSRoom] = useState<ListCommonDto>(null);
 
     const defaultFilter = {
         showDateFrom: DateUtils.subtractDays(new Date(), 7),
         showDateTo: DateUtils.addDays(new Date(), 2),
         orgId: user.orgId,
-        sroomId: 0,
+        sroomId: undefined,
         selectedPuId: undefined,
     } as LocalFilter;
 
@@ -56,7 +58,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                     showDateFrom: DateUtils.toString(localFilter.showDateFrom),
                     showDateTo: DateUtils.toString(localFilter.showDateTo),
                     orgId: localFilter.orgId || user.orgId,
-                    sroomId: localFilter.sroomId,
+                    sroomId: localFilter.selectedSRoomId,
                     selectedPuId: localFilter.selectedPuId,
                 } as DataStatFilter));
             }, 1000)
@@ -71,7 +73,16 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
         try {
             return await filmsApi(currentSToken, query);
         } catch (error) {
-            console.error('Error fetching users:', error);
+            console.error('Error fetching films:', error);
+            return [];
+        }
+    };
+    const fetchSRooms = async (query) => {
+        try {
+            let currentOrgId: number = localFilter.orgId || user.orgId as number;
+            return await sroomsApi(currentSToken, currentOrgId, query);
+        } catch (error) {
+            console.error('Error fetching srooms:', error);
             return [];
         }
     };
@@ -82,8 +93,16 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
             ...localFilter,
             selectedPuId: selected ? selected.id : undefined
         } as LocalFilter)
-        console.log('Selected IDs:', selected);
     };
+
+    const handleSRoomChange = (selected: ListCommonDto) => {
+        setSelectedSRoom(selected)
+        setLocalFilter({
+            ...localFilter,
+            selectedSRoomId: selected ? selected.id : undefined
+        } as LocalFilter)
+    };
+
     return(
         <DBGFilter height={props.height} >
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -109,13 +128,6 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                         >
                             {isLoading ? <CircularProgress size={24} /> : ''}
                         </Button>
-                        <AsyncAutocomplete
-                            label="Фильм"
-                            fetchOptions={fetchFilms}
-                            value={selectedFilm}
-                            onChange={handleFilmChange}
-                        />
-
                         <DateTimePicker
                             localeText={localConfigs.dateTimePicker}
                             ampm={false}
@@ -149,28 +161,21 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                                 } as LocalFilter)
                             }}
                         />
-                        <TextField
+                        <AsyncAutocomplete
+                            width={150}
                             label="Кинозал"
-                            name="sroomIdInput"
-                            value={localFilter.sroomId}
-                            onChange={(e) => {
-                                setLocalFilter({
-                                    ...localFilter,
-                                    sroomId: e.target.value
-                                } as LocalFilter)
-                            }}
+                            fetchOptions={fetchSRooms}
+                            value={selectedSRoom}
+                            onChange={handleSRoomChange}
                         />
-                        {/*<TextField*/}
-                        {/*    label="Фильм"*/}
-                        {/*    name="filmInput"*/}
-                        {/*    value={localFilter.film}*/}
-                        {/*    onChange={(e) => {*/}
-                        {/*        setLocalFilter({*/}
-                        {/*            ...localFilter,*/}
-                        {/*            film: e.target.value*/}
-                        {/*        } as LocalFilter)*/}
-                        {/*    }}*/}
-                        {/*/>*/}
+                        <AsyncAutocomplete
+                            width={250}
+                            label="Фильм"
+                            fetchOptions={fetchFilms}
+                            value={selectedFilm}
+                            onChange={handleFilmChange}
+                        />
+
                     </Box>
                 </Box>
             </LocalizationProvider>

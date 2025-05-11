@@ -5,15 +5,17 @@ import {Pagginator, Sorter} from "../redux/types";
 import {DataStatFilter} from "../redux/datastat/types";
 
 const baseApiUrl = process.env.REACT_APP_API_URL + "/api/v1";
-const loadMenuUrl = baseApiUrl + "/loo/films";
+const loadMenuUrl = baseApiUrl + "/loo/srooms";
 
 
-export async function filmsApi(
+export async function sroomsApi(
     stoken: string,
+    orgId: number,
     filter: string,
 ) {
     if(stoken) {
         const queryParams = [];
+        queryParams.push(['org_id', orgId]);
         queryParams.push(['filter', filter]);
         const requestConfig = {
             headers: {

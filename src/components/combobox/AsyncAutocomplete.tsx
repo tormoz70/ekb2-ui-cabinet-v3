@@ -3,7 +3,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useEffect, useState} from "react";
 
-const AsyncAutocomplete = ({ label, fetchOptions, value, onChange }) => {
+const AsyncAutocomplete = ({ label, fetchOptions, value, onChange, width }) => {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -49,7 +49,7 @@ const AsyncAutocomplete = ({ label, fetchOptions, value, onChange }) => {
 
     return (
         <Autocomplete
-            sx={{ width: 300 }}
+            sx={{ width: width }}
             open={open}
             onOpen={() => setOpen(true)}
             onClose={() => setOpen(false)}
