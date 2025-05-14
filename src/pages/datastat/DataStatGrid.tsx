@@ -246,6 +246,8 @@ export default function DataStatGrid(props: DataStatGridProps) {
           sortingMode="server"
           sortModel={sortModel}
           onSortModelChange={(model) => handleSortChange(model)}
+
       />
+
   );
 }
