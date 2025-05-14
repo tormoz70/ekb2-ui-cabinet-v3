@@ -170,6 +170,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                         />
                         <AsyncAutocomplete
                             width={250}
+                            dropdownWidth={'450px'}
                             label="Фильм"
                             fetchOptions={fetchFilms}
                             value={selectedFilm}
