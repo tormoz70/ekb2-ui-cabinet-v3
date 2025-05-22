@@ -15,6 +15,7 @@ import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
 
+// todo: засунуть настройки фильтра в сторе
 interface LocalFilter {
     regFrom: Date;
     regTo?: Date | undefined;

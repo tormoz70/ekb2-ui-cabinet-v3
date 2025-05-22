@@ -7,10 +7,11 @@ import {
   setLoadStatPagginator,
   setLoadStatSorter
 } from "../../redux/loadstat/loadStatThunk";
-import {LoadStatFilter, Pagginator, Sorter} from "../../redux/loadstat/types";
+import {LoadStatFilter} from "../../redux/loadstat/types";
 import {DateUtils} from "../../utils/DateUtils";
 import {LoadStatListResponse, LoadStatLog} from "../../ekb2-api";
 import sizeConfigs from "../../configs/sizeConfigs";
+import {Pagginator, Sorter} from "../../redux/types";
 
 const columns: GridColDef<(LoadStatLog[])[number]>[] = [
   { field: 'id',
@@ -97,7 +98,8 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
   const { pagginator }: { pagginator: Pagginator } = useAppSelector((state: RootState) => state.loadStatState);
   const { sorter }: { sorter: Sorter } = useAppSelector((state: RootState) => state.loadStatState);
   const { response }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
-  const { isLoading }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
+  const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.loadStatState);
+  const { isLoaded }: { isLoaded: boolean } = useAppSelector((state: RootState) => state.loadStatState);
 
 // --- pagination & sorting
   const rowCountRef = useRef(response?.totalCount || 0);
@@ -153,7 +155,7 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
   }, [sortModel]);
 
   useEffect(() => {
-    if(selectedPage === 'loadstat') {
+    if(!isLoaded && selectedPage === 'loadstat') {
       console.log(" --- selectedPage: " + selectedPage);
       if(!pagginator.page) {
         setPagginator();
