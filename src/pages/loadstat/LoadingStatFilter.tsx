@@ -60,21 +60,30 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
 
     //const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
 
-    useEffect(() => {
-        if(currentSToken && filter.regFrom) {
+    // useEffect(() => {
+    //     if(currentSToken && filter.regFrom) {
+    //         delayedSetFilter.runDelayed(() => {
+    //             // dispatch(setLoadStatFilter({
+    //             //     regFrom: DateUtils.toString(filter.regFrom),
+    //             //     regTo: DateUtils.toString(filter.regTo),
+    //             //     orgId: filter.orgId,
+    //             //     sessOrgId: filter.sessOrgId,
+    //             //     packetName: filter.packetName,
+    //             //     curPstate: filter.curPstate,
+    //             // } as LoadStatFilter));
+    //             dispatch(setLoadStatFilter(filter));
+    //         }, 1000)
+    //     }
+    // }, [filter, refreshKey]);
+
+    const handleChangeFilter = (filter: LoadStatFilter) => {
+        if (currentSToken && filter.regFrom) {
             delayedSetFilter.runDelayed(() => {
-                // dispatch(setLoadStatFilter({
-                //     regFrom: DateUtils.toString(filter.regFrom),
-                //     regTo: DateUtils.toString(filter.regTo),
-                //     orgId: filter.orgId,
-                //     sessOrgId: filter.sessOrgId,
-                //     packetName: filter.packetName,
-                //     curPstate: filter.curPstate,
-                // } as LoadStatFilter));
                 dispatch(setLoadStatFilter(filter));
             }, 1000)
         }
-    }, [filter, refreshKey]);
+    };
+
 
     const handleRefresh = () => {
         setRefreshKey(prevKey => prevKey + 1);
@@ -111,7 +120,7 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             format="dd.MM.yyyy HH:mm"
                             label="Получен с"
                             value={DateUtils.fromString(filter.regFrom)}
-                            onChange={(newValue) => setLoadStatFilter({
+                            onChange={(newValue) => handleChangeFilter({
                                 ...filter,
                                 regFrom: DateUtils.toString(newValue)
                             } as LoadStatFilter)}
@@ -122,7 +131,7 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             format="dd.MM.yyyy HH:mm"
                             label="Получен по"
                             value={DateUtils.fromString(filter.regTo)}
-                            onChange={(newValue) => setLoadStatFilter({
+                            onChange={(newValue) => handleChangeFilter({
                                 ...filter,
                                 regTo: DateUtils.toString(newValue)
                             } as LoadStatFilter)}
@@ -143,7 +152,7 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             name="sessOrgIdInput"
                             value={filter.sessOrgId}
                             onChange={(e) => {
-                                setLoadStatFilter({
+                                handleChangeFilter({
                                     ...filter,
                                     sessOrgId: e.target.value
                                 } as LoadStatFilter)
@@ -154,7 +163,7 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             name="packetNameInput"
                             value={filter.packetName}
                             onChange={(e) => {
-                                setLoadStatFilter({
+                                handleChangeFilter({
                                     ...filter,
                                     packetName: e.target.value
                                 } as LoadStatFilter)
@@ -165,7 +174,7 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             name="curPstateFilter"
                             value={filter.curPstate}
                             onChange={(e) => {
-                                setLoadStatFilter({
+                                handleChangeFilter({
                                     ...filter,
                                     curPstate: e.target.value
                                 } as LoadStatFilter)
