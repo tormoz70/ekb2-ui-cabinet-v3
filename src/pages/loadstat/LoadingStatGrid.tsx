@@ -11,7 +11,7 @@ import {LoadStatFilter} from "../../redux/loadstat/types";
 import {DateUtils} from "../../utils/DateUtils";
 import {LoadStatListResponse, LoadStatLog} from "../../ekb2-api";
 import sizeConfigs from "../../configs/sizeConfigs";
-import {Pagginator, Sorter} from "../../redux/types";
+import {Pagginator} from "../../redux/types";
 
 const columns: GridColDef<(LoadStatLog[])[number]>[] = [
   { field: 'id',
@@ -96,7 +96,7 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
   const { selectedPage, currentSToken } = useAppSelector((state: RootState) => state.appStateState);
   const { filter }: { filter: LoadStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
   const { pagginator }: { pagginator: Pagginator } = useAppSelector((state: RootState) => state.loadStatState);
-  const { sorter }: { sorter: Sorter } = useAppSelector((state: RootState) => state.loadStatState);
+  const { sorter }: { sorter: GridSortModel } = useAppSelector((state: RootState) => state.loadStatState);
   const { response }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
   const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.loadStatState);
   const { isLoaded }: { isLoaded: boolean } = useAppSelector((state: RootState) => state.loadStatState);
@@ -109,56 +109,53 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
     }
     return rowCountRef.current;
   }, [response?.totalCount]);
-  const [paginationModel, setPaginationModel] = useState({
-    page: 0,
-    pageSize: 50,
-  });
-  const [sortModel, setSortModel] = useState<GridSortModel>([
-    {
-      field: 'id',
-      sort: 'desc',
-    },
-  ]);
-  const handleSortChange = (model: GridSortModel) => {
-    const modelJson = JSON.stringify(model)
-    console.log(" --- handleSortChange model: " + modelJson);
-    if (modelJson !== JSON.stringify(sortModel)) {
-      setSortModel(model);
-    }
-  };
+  // const [paginationModel, setPaginationModel] = useState({
+  //   page: pagginator.page,
+  //   pageSize: pagginator.limit,
+  // });
+  // const [sortModel, setSortModel] = useState<GridSortModel>([
+  //   {
+  //     field: sorter.fieldName,
+  //     sort: sorter.direction,
+  //   },
+  // ]);
+  // const handleSortChange = (model: GridSortModel) => {
+  //   const modelJson = JSON.stringify(model)
+  //   console.log(" --- handleSortChange model: " + modelJson);
+  //   if (modelJson !== JSON.stringify(sorter)) {
+  //     setLoadStatSorter(model);
+  //   }
+  // };
 // ------------------------------------------------------------------------------
 
-  const setPagginator = () => {
-    dispatch(setLoadStatPagginator({
-      page: paginationModel.page,
-      limit: paginationModel.pageSize,
-    } as Pagginator));
+  const setPagginator = (model) => {
+    if(model) {
+      dispatch(setLoadStatPagginator(model));
+    }
   }
 
-  const setSorter = () => {
-    dispatch(setLoadStatSorter({
-      fieldName: sortModel[0]?.field,
-      direction: sortModel[0]?.sort
-    } as Sorter));
+  const setSorter = (model) => {
+    if(model) {
+      dispatch(setLoadStatSorter(model));
+    }
   }
 
-  useEffect(() => {
-    if(currentSToken && pagginator && pagginator.page !== undefined) {
-      setPagginator();
-    }
-  }, [paginationModel]);
+  // useEffect(() => {
+  //   if(currentSToken && pagginator && pagginator.page !== undefined) {
+  //     setPagginator();
+  //   }
+  // }, [paginationModel]);
 
-  useEffect(() => {
-    if(currentSToken) {
-      setSorter();
-    }
-  }, [sortModel]);
+  // useEffect(() => {
+  //   if(currentSToken) {
+  //     setSorter();
+  //   }
+  // }, [sortModel]);
 
   useEffect(() => {
     if(!isLoaded && selectedPage === 'loadstat') {
-      console.log(" --- selectedPage: " + selectedPage);
-      if(!pagginator.page) {
-        setPagginator();
+      if(currentSToken && pagginator && pagginator.page !== undefined) {
+        dispatch(loadLoadStat(currentSToken, filter, pagginator, sorter));
       }
     }
   }, [selectedPage]);
@@ -180,11 +177,11 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
           rowCount={rowCount}
           loading={isLoading}
           paginationMode="server"
-          paginationModel={paginationModel}
-          onPaginationModelChange={setPaginationModel}
+          paginationModel={pagginator}
+          onPaginationModelChange={setPagginator}
           sortingMode="server"
-          sortModel={sortModel}
-          onSortModelChange={(model) => handleSortChange(model)}
+          sortModel={sorter}
+          onSortModelChange={setSorter}
       />
   );
 }

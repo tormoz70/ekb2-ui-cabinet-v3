@@ -1,5 +1,7 @@
 import {LoadStatListResponse} from "../../ekb2-api";
-import {Pagginator, Sorter} from "../types";
+import {Pagginator} from "../types";
+import {GridSortModel} from '@mui/x-data-grid';
+import {DateUtils} from "../../utils/DateUtils";
 
 export interface LoadStatState {
     response: LoadStatListResponse | undefined,
@@ -8,40 +10,51 @@ export interface LoadStatState {
     isLoaded: boolean,
     filter: LoadStatFilter,
     pagginator: Pagginator,
-    sorter: Sorter
+    sorter: GridSortModel
 }
+
+export interface LoadStatFilter {
+    regFrom: String;
+    regTo?: String | undefined;
+    orgId: string;
+    sessPrntOrgId: string;
+    sessOrgId: string;
+    packetName: string;
+    curPstate: string;
+    message: string;
+    ip: string;
+    loadMethod: string;
+    isTest: string;
+};
+
+const defaultFilter = {
+    regFrom: DateUtils.toString(DateUtils.subtractDays(new Date(), 7)),
+    regTo: DateUtils.toString(new Date()),
+    orgId: '',
+    sessPrntOrgId: '',
+    sessOrgId: '',
+    packetName: '',
+    curPstate: '',
+    message: '',
+    ip: '',
+    loadMethod: '',
+    isTest: '',
+} as LoadStatFilter;
 
 export const emptyLoadStat: LoadStatState = {
     response: undefined,
     error: undefined,
     isLoading: false,
     isLoaded: false,
-    filter: {
-        regFrom: undefined,
-        regTo: undefined
-    },
+    filter: defaultFilter,
     pagginator: {
-        page: undefined,
-        limit: undefined,
+        page: 0,
+        pageSize: 50,
     },
-    sorter: {
-        fieldName: undefined,
-        direction: "acs"
-    }
+    sorter: [
+        {
+            field: 'id',
+            sort: 'desc',
+        },
+    ]
 };
-
-export interface LoadStatFilter {
-    regFrom: string | undefined;
-    regTo: string  | undefined;
-    orgId?: string | undefined;
-    sessPrntOrgId?: string | undefined;
-    sessOrgId?: string | undefined;
-    packetName?: string | undefined;
-    curPstate?: string | undefined;
-    message?: string | undefined;
-    ip?: string | undefined;
-    loadMethod?: string | undefined;
-    isTest?: string | undefined;
-
-};
-

@@ -2,9 +2,11 @@ import {loadStatSlice} from "./loadStatSlice";
 import {loadLoadStatApi} from "../../api/loadStatApi";
 import {LoadStatListResponse} from "../../ekb2-api";
 import {AppDispatch} from "../store";
-import {LoadStatFilter, Pagginator, Sorter} from "./types";
+import {LoadStatFilter} from "./types";
+import {GridSortModel} from "@mui/x-data-grid";
+import {Pagginator} from "../types";
 
-export const loadLoadStat: any = (stoken: string, filter: LoadStatFilter, pagginator: Pagginator, sorter: Sorter) => async (dispatch: AppDispatch) => {
+export const loadLoadStat: any = (stoken: string, filter: LoadStatFilter, pagginator: Pagginator, sorter: GridSortModel) => async (dispatch: AppDispatch) => {
     if(filter.regFrom === undefined) {
         return;
     }
@@ -31,6 +33,6 @@ export const setLoadStatPagginator: any = (pagginator: Pagginator) => async (dis
     dispatch(loadStatSlice.actions.setPagginator(pagginator));
 };
 
-export const setLoadStatSorter: any = (sorter: Sorter) => async (dispatch: AppDispatch) => {
+export const setLoadStatSorter: any = (sorter: GridSortModel) => async (dispatch: AppDispatch) => {
     dispatch(loadStatSlice.actions.setSorter(sorter));
 };

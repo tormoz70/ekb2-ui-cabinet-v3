@@ -16,33 +16,33 @@ import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 // todo: засунуть настройки фильтра в сторе
-interface LocalFilter {
-    regFrom: Date;
-    regTo?: Date | undefined;
-    orgId: string;
-    sessPrntOrgId: string;
-    sessOrgId: string;
-    packetName: string;
-    curPstate: string;
-    message: string;
-    ip: string;
-    loadMethod: string;
-    isTest: string;
-};
+// interface LocalFilter {
+//     regFrom: Date;
+//     regTo?: Date | undefined;
+//     orgId: string;
+//     sessPrntOrgId: string;
+//     sessOrgId: string;
+//     packetName: string;
+//     curPstate: string;
+//     message: string;
+//     ip: string;
+//     loadMethod: string;
+//     isTest: string;
+// };
 
-const defaultFilter = {
-    regFrom: DateUtils.subtractDays(new Date(), 7),
-    regTo: new Date(),
-    orgId: '',
-    sessPrntOrgId: '',
-    sessOrgId: '',
-    packetName: '',
-    curPstate: '',
-    message: '',
-    ip: '',
-    loadMethod: '',
-    isTest: '',
-} as LocalFilter;
+// const defaultFilter = {
+//     regFrom: DateUtils.subtractDays(new Date(), 7),
+//     regTo: new Date(),
+//     orgId: '',
+//     sessPrntOrgId: '',
+//     sessOrgId: '',
+//     packetName: '',
+//     curPstate: '',
+//     message: '',
+//     ip: '',
+//     loadMethod: '',
+//     isTest: '',
+// } as LocalFilter;
 
 export interface LoadingStatFilterFormProps {
     height: number,
@@ -54,24 +54,27 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
     const dispatch = useAppDispatch();
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
     const { isLoading }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
+    const { filter }: { filter: LoadStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
+
     const [refreshKey, setRefreshKey] = useState(0);
 
-    const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
+    //const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
 
     useEffect(() => {
-        if(currentSToken && localFilter.regFrom) {
+        if(currentSToken && filter.regFrom) {
             delayedSetFilter.runDelayed(() => {
-                dispatch(setLoadStatFilter({
-                    regFrom: DateUtils.toString(localFilter.regFrom),
-                    regTo: DateUtils.toString(localFilter.regTo),
-                    orgId: localFilter.orgId,
-                    sessOrgId: localFilter.sessOrgId,
-                    packetName: localFilter.packetName,
-                    curPstate: localFilter.curPstate,
-                } as LoadStatFilter));
+                // dispatch(setLoadStatFilter({
+                //     regFrom: DateUtils.toString(filter.regFrom),
+                //     regTo: DateUtils.toString(filter.regTo),
+                //     orgId: filter.orgId,
+                //     sessOrgId: filter.sessOrgId,
+                //     packetName: filter.packetName,
+                //     curPstate: filter.curPstate,
+                // } as LoadStatFilter));
+                dispatch(setLoadStatFilter(filter));
             }, 1000)
         }
-    }, [localFilter, refreshKey]);
+    }, [filter, refreshKey]);
 
     const handleRefresh = () => {
         setRefreshKey(prevKey => prevKey + 1);
@@ -107,65 +110,65 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             ampm={false}
                             format="dd.MM.yyyy HH:mm"
                             label="Получен с"
-                            value={localFilter.regFrom}
-                            onChange={(newValue) => setLocalFilter({
-                                ...localFilter,
-                                regFrom: newValue
-                            } as LocalFilter)}
+                            value={DateUtils.fromString(filter.regFrom)}
+                            onChange={(newValue) => setLoadStatFilter({
+                                ...filter,
+                                regFrom: DateUtils.toString(newValue)
+                            } as LoadStatFilter)}
                         />
                         <DateTimePicker
                             localeText={localConfigs.dateTimePicker}
                             ampm={false}
                             format="dd.MM.yyyy HH:mm"
                             label="Получен по"
-                            value={localFilter.regTo}
-                            onChange={(newValue) => setLocalFilter({
-                                ...localFilter,
-                                regTo: newValue
-                            } as LocalFilter)}
+                            value={DateUtils.fromString(filter.regTo)}
+                            onChange={(newValue) => setLoadStatFilter({
+                                ...filter,
+                                regTo: DateUtils.toString(newValue)
+                            } as LoadStatFilter)}
                         />
                         <TextField
                             label="Поставщик"
                             name="orgIdInput"
-                            value={localFilter.orgId}
+                            value={filter.orgId}
                             onChange={(e) => {
-                                setLocalFilter({
-                                    ...localFilter,
+                                setLoadStatFilter({
+                                    ...filter,
                                     orgId: e.target.value
-                                } as LocalFilter)
+                                } as LoadStatFilter)
                             }}
                         />
                         <TextField
                             label="Демонстратор"
                             name="sessOrgIdInput"
-                            value={localFilter.sessOrgId}
+                            value={filter.sessOrgId}
                             onChange={(e) => {
-                                setLocalFilter({
-                                    ...localFilter,
+                                setLoadStatFilter({
+                                    ...filter,
                                     sessOrgId: e.target.value
-                                } as LocalFilter)
+                                } as LoadStatFilter)
                             }}
                         />
                         <TextField
                             label="Пакет"
                             name="packetNameInput"
-                            value={localFilter.packetName}
+                            value={filter.packetName}
                             onChange={(e) => {
-                                setLocalFilter({
-                                    ...localFilter,
+                                setLoadStatFilter({
+                                    ...filter,
                                     packetName: e.target.value
-                                } as LocalFilter)
+                                } as LoadStatFilter)
                             }}
                         />
                         <TextField
                             label="Состояние"
                             name="curPstateFilter"
-                            value={localFilter.curPstate}
+                            value={filter.curPstate}
                             onChange={(e) => {
-                                setLocalFilter({
-                                    ...localFilter,
+                                setLoadStatFilter({
+                                    ...filter,
                                     curPstate: e.target.value
-                                } as LocalFilter)
+                                } as LoadStatFilter)
                             }}
                         />
                     </Box>

@@ -2,10 +2,11 @@ import {dataStatSlice} from "./dataStatSlice";
 import {DataStatListResponse} from "../../ekb2-api";
 import {AppDispatch} from "../store";
 import {DataStatFilter} from "./types";
-import {Pagginator, Sorter} from "../types";
+import {Pagginator} from "../types";
 import {dataStatApi} from "../../api/dataStatApi";
+import {GridSortModel} from "@mui/x-data-grid";
 
-export const loadDataStat: any = (stoken: string, filter: DataStatFilter, pagginator: Pagginator, sorter: Sorter) => async (dispatch: AppDispatch) => {
+export const loadDataStat: any = (stoken: string, filter: DataStatFilter, pagginator: Pagginator, sorter: GridSortModel) => async (dispatch: AppDispatch) => {
     if(filter.showDateFrom === undefined || filter.showDateFrom === "") {
         return;
     }
@@ -32,6 +33,6 @@ export const setDataStatPagginator: any = (pagginator: Pagginator) => async (dis
     dispatch(dataStatSlice.actions.setPagginator(pagginator));
 };
 
-export const setDataStatSorter: any = (sorter: Sorter) => async (dispatch: AppDispatch) => {
+export const setDataStatSorter: any = (sorter: GridSortModel) => async (dispatch: AppDispatch) => {
     dispatch(dataStatSlice.actions.setSorter(sorter));
 };

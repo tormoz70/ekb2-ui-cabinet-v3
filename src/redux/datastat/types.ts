@@ -1,5 +1,6 @@
 import {DataStatListResponse} from "../../ekb2-api";
-import {Pagginator, Sorter} from "../types";
+import {Pagginator} from "../types";
+import {GridSortModel} from "@mui/x-data-grid";
 
 export interface DataStatState {
     response: DataStatListResponse | undefined,
@@ -8,7 +9,7 @@ export interface DataStatState {
     isLoaded: boolean,
     filter: DataStatFilter,
     pagginator: Pagginator,
-    sorter: Sorter
+    sorter: GridSortModel
 }
 
 export const emptyDataStat: DataStatState = {
@@ -21,13 +22,13 @@ export const emptyDataStat: DataStatState = {
         showDateTo: ''
     } as DataStatFilter,
     pagginator: {
-        page: undefined,
-        limit: undefined,
+        page: 0,
+        pageSize: 50,
     },
-    sorter: {
-        fieldName: undefined,
-        direction: "acs"
-    }
+    sorter: [{
+        field: "id",
+        direction: "desc"
+    }]
 };
 
 export interface DataStatFilter {
