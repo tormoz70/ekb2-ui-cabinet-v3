@@ -6,7 +6,7 @@ import {localConfigs} from "../../configs/localConfigs";
 import {TextField} from "@mui/material";
 import {DateUtils} from "../../utils/DateUtils";
 import {useEffect, useState} from "react";
-import {setLoadStatFilter} from "../../redux/loadstat/loadStatThunk";
+import {loadLoadStat, setLoadStatFilter} from "../../redux/loadstat/loadStatThunk";
 import {LoadStatFilter} from "../../redux/loadstat/types";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {DelayedLaunch} from "../../utils/DelayedLaunch";
@@ -14,6 +14,8 @@ import {LoadStatListResponse} from "../../ekb2-api";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
+import {Pagginator} from "../../redux/types";
+import {GridSortModel} from "@mui/x-data-grid";
 
 // todo: засунуть настройки фильтра в сторе
 // interface LocalFilter {
@@ -53,8 +55,11 @@ const delayedSetFilter: DelayedLaunch = new DelayedLaunch();
 export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps) {
     const dispatch = useAppDispatch();
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
-    const { isLoading }: { response: LoadStatListResponse } = useAppSelector((state: RootState) => state.loadStatState);
+    const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.loadStatState);
+    const { isLoaded }: { isLoaded: boolean } = useAppSelector((state: RootState) => state.loadStatState);
     const { filter }: { filter: LoadStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
+    const { pagginator }: { pagginator: Pagginator } = useAppSelector((state: RootState) => state.loadStatState);
+    const { sorter }: { sorter: GridSortModel } = useAppSelector((state: RootState) => state.loadStatState);
 
     const [refreshKey, setRefreshKey] = useState(0);
 
@@ -76,14 +81,60 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
     //     }
     // }, [filter, refreshKey]);
 
-    const handleChangeFilter = (filter: LoadStatFilter) => {
-        if (currentSToken && filter.regFrom) {
+    // const handleChangeFilter = (filter: LoadStatFilter) => {
+    //     if (currentSToken && filter.regFrom) {
+    //         delayedSetFilter.runDelayed(() => {
+    //             dispatch(setLoadStatFilter(filter));
+    //         }, 1000)
+    //     }
+    // };
+
+    useEffect(() => {
+        if(currentSToken) {
             delayedSetFilter.runDelayed(() => {
-                dispatch(setLoadStatFilter(filter));
-            }, 1000)
+                dispatch(loadLoadStat(currentSToken, filter, pagginator, sorter));
+            }, 1000);
         }
+    }, [filter]);
+
+    const handleChangeRegFrom = (e) => {
+        dispatch(setLoadStatFilter({
+            ...filter,
+            regFrom: DateUtils.toString(e)
+        } as LoadStatFilter));
     };
 
+    const handleChangeRegTo = (e) => {
+        dispatch(setLoadStatFilter({
+            ...filter,
+            regTo: DateUtils.toString(e)
+        } as LoadStatFilter));
+    };
+
+    const handleChangeOrgId = (e) => {
+        dispatch(setLoadStatFilter({
+            ...filter,
+            orgId: e.target.value
+        } as LoadStatFilter));
+    };
+    const handleChangeSessOrgId = (e) => {
+        dispatch(setLoadStatFilter({
+            ...filter,
+            sessOrgId: e.target.value
+        } as LoadStatFilter));
+    };
+    const handleChangePacketName = (e) => {
+        dispatch(setLoadStatFilter({
+            ...filter,
+            packetName: e.target.value
+        } as LoadStatFilter));
+    };
+    const handleChangeCurPstate = (e) => {
+        dispatch(setLoadStatFilter({
+            ...filter,
+            curPstate: e.target.value
+        } as LoadStatFilter));
+    };
 
     const handleRefresh = () => {
         setRefreshKey(prevKey => prevKey + 1);
@@ -112,7 +163,7 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             onClick={handleRefresh}
                             disabled={isLoading}
                         >
-                            {isLoading ? <CircularProgress size={24} /> : ''}
+                            {/*{isLoading ? <CircularProgress size={24} /> : ''}*/}
                         </Button>
                         <DateTimePicker
                             localeText={localConfigs.dateTimePicker}
@@ -120,10 +171,7 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             format="dd.MM.yyyy HH:mm"
                             label="Получен с"
                             value={DateUtils.fromString(filter.regFrom)}
-                            onChange={(newValue) => handleChangeFilter({
-                                ...filter,
-                                regFrom: DateUtils.toString(newValue)
-                            } as LoadStatFilter)}
+                            onChange={handleChangeRegFrom}
                         />
                         <DateTimePicker
                             localeText={localConfigs.dateTimePicker}
@@ -131,54 +179,31 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                             format="dd.MM.yyyy HH:mm"
                             label="Получен по"
                             value={DateUtils.fromString(filter.regTo)}
-                            onChange={(newValue) => handleChangeFilter({
-                                ...filter,
-                                regTo: DateUtils.toString(newValue)
-                            } as LoadStatFilter)}
+                            onChange={handleChangeRegTo}
                         />
                         <TextField
                             label="Поставщик"
                             name="orgIdInput"
                             value={filter.orgId}
-                            onChange={(e) => {
-                                setLoadStatFilter({
-                                    ...filter,
-                                    orgId: e.target.value
-                                } as LoadStatFilter)
-                            }}
+                            onChange={handleChangeOrgId}
                         />
                         <TextField
                             label="Демонстратор"
                             name="sessOrgIdInput"
                             value={filter.sessOrgId}
-                            onChange={(e) => {
-                                handleChangeFilter({
-                                    ...filter,
-                                    sessOrgId: e.target.value
-                                } as LoadStatFilter)
-                            }}
+                            onChange={handleChangeSessOrgId}
                         />
                         <TextField
                             label="Пакет"
                             name="packetNameInput"
                             value={filter.packetName}
-                            onChange={(e) => {
-                                handleChangeFilter({
-                                    ...filter,
-                                    packetName: e.target.value
-                                } as LoadStatFilter)
-                            }}
+                            onChange={handleChangePacketName}
                         />
                         <TextField
                             label="Состояние"
                             name="curPstateFilter"
                             value={filter.curPstate}
-                            onChange={(e) => {
-                                handleChangeFilter({
-                                    ...filter,
-                                    curPstate: e.target.value
-                                } as LoadStatFilter)
-                            }}
+                            onChange={handleChangeCurPstate}
                         />
                     </Box>
                 {/*    <Box sx={{*/}

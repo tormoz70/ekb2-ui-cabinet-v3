@@ -109,23 +109,6 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
     }
     return rowCountRef.current;
   }, [response?.totalCount]);
-  // const [paginationModel, setPaginationModel] = useState({
-  //   page: pagginator.page,
-  //   pageSize: pagginator.limit,
-  // });
-  // const [sortModel, setSortModel] = useState<GridSortModel>([
-  //   {
-  //     field: sorter.fieldName,
-  //     sort: sorter.direction,
-  //   },
-  // ]);
-  // const handleSortChange = (model: GridSortModel) => {
-  //   const modelJson = JSON.stringify(model)
-  //   console.log(" --- handleSortChange model: " + modelJson);
-  //   if (modelJson !== JSON.stringify(sorter)) {
-  //     setLoadStatSorter(model);
-  //   }
-  // };
 // ------------------------------------------------------------------------------
 
   const setPagginator = (model) => {
@@ -140,18 +123,6 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
     }
   }
 
-  // useEffect(() => {
-  //   if(currentSToken && pagginator && pagginator.page !== undefined) {
-  //     setPagginator();
-  //   }
-  // }, [paginationModel]);
-
-  // useEffect(() => {
-  //   if(currentSToken) {
-  //     setSorter();
-  //   }
-  // }, [sortModel]);
-
   useEffect(() => {
     if(!isLoaded && selectedPage === 'loadstat') {
       if(currentSToken && pagginator && pagginator.page !== undefined) {
@@ -164,7 +135,7 @@ export default function LoadingStatGrid(props: LoadingStatGridProps) {
     if(currentSToken && pagginator && pagginator.page !== undefined) {
       dispatch(loadLoadStat(currentSToken, filter, pagginator, sorter));
     }
-  }, [filter, pagginator, sorter]);
+  }, [pagginator, sorter]);
 
   return (
       <DGrid
