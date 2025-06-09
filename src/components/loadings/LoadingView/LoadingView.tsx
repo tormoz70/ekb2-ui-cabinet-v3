@@ -5,12 +5,6 @@ import {useSelector} from "react-redux";
 import {RootState} from "../../../redux/store";
 
 const DEFAULT_LOADING_MSG = 'Выполняется загрузка';
-const DEFAULT_ACCEPT_MSG = 'Продолжить работу';
-
-// interface LoadingViewProps {
-//     loading?: boolean
-//     msg?: string
-// }
 
 const LoadingView = () => {
     const classes = useStyles();

@@ -9,11 +9,11 @@ export const loginUser: any = (userName:string, password: string) => async (disp
     try {
         dispatch(userProfileSlice.actions.loginUserStart());
         const response: UserProfile = await loginApi(userName, password);
-        dispatch(appStateSlice.actions.setCurrentSToken(response.user.stoken??""));
+        dispatch(appStateSlice.actions.setCurrentSToken(response.user.stoken ?? undefined));
         dispatch(userProfileSlice.actions.loginUserSuccess(response.user));
     } catch (error) {
-        debugger;
-        dispatch(userProfileSlice.actions.loginUserFailed(error));
+        dispatch(userProfileSlice.actions.loginUserCancel());
+        dispatch(appStateSlice.actions.setCurrentSToken(null));
     }
 };
 
@@ -24,7 +24,6 @@ export const currentUser: any = (stoken: string) => async (dispatch: AppDispatch
         const response: SsoUser = await currentApi(stoken);
         dispatch(userProfileSlice.actions.loginUserSuccess(response));
     } catch (error) {
-        debugger;
         dispatch(userProfileSlice.actions.loginUserFailed(error));
     }
 };
@@ -33,4 +32,5 @@ export const restoreSToken: any = () => async (dispatch: AppDispatch) => {
     const storedSToken = localStorage.getItem("stoken");
     dispatch(appStateSlice.actions.setCurrentSToken(storedSToken ?? undefined));
 }
+
 

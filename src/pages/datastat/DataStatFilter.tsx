@@ -36,7 +36,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const dispatch = useAppDispatch();
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
     const { user }: {user: SsoUser} = useAppSelector((state: RootState) => state.userProfileState)
-    const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.loadStatState);
+    const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.dataStatState);
     const [refreshKey, setRefreshKey] = useState(0);
     const [selectedFilm, setSelectedFilm] = useState<ListCommonDto>(null);
     const [selectedSRoom, setSelectedSRoom] = useState<ListCommonDto>(null);

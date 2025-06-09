@@ -30,9 +30,11 @@ const MainBootstrap = () => {
             dispatch(appStateSlice.actions.setBlockingWaiting(undefined));
         }
         if(usrProfile.error instanceof EkbApiError) {
-            dispatch(appStateSlice.actions.setCurrentSToken(undefined));
+            //dispatch(appStateSlice.actions.setCurrentSToken(null));
+            dispatch(appStateSlice.actions.setBlockingCallback((a) => {
+                dispatch(appStateSlice.actions.setCurrentSToken(null));
+            }));
             dispatch(appStateSlice.actions.setBlockingError(usrProfile.error));
-
         }
         if(usrProfile.user && usrProfile.user.stoken) {
             dispatch(loadUserMenu(usrProfile.user.stoken));

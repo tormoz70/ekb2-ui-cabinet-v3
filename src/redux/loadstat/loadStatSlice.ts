@@ -1,7 +1,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
 import {emptyLoadStat, LoadStatFilter, LoadStatState} from "./types";
 import {LoadStatListResponse} from "../../ekb2-api";
-import {Pagginator, Sorter} from "../types";
+import {Pagginator} from "../types";
+import {GridSortModel} from "@mui/x-data-grid";
 
 export const loadStatSlice = createSlice({
     name: "loadStatState",
@@ -28,7 +29,7 @@ export const loadStatSlice = createSlice({
         setPagginator: (state: LoadStatState, action: PayloadAction<Pagginator>) => {
             state.pagginator = action.payload;
         },
-        setSorter: (state: LoadStatState, action: PayloadAction<Sorter>) => {
+        setSorter: (state: LoadStatState, action: PayloadAction<GridSortModel>) => {
             state.sorter = action.payload;
         }
 

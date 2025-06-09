@@ -16,6 +16,12 @@ export const userProfileSlice = createSlice({
             state.isLoaded = true;
             state.error = undefined;
         },
+        loginUserCancel: (state: UserProfile) => {
+            state.user = emptyUser;
+            state.isLoading = false;
+            state.isLoaded = false;
+            state.error = undefined;
+        },
         loginUserFailed: (state: UserProfile, action: PayloadAction<Error | undefined>) => {
             state.user = emptyUser;
             state.isLoading = false;

@@ -10,41 +10,10 @@ import {loadLoadStat, setLoadStatFilter} from "../../redux/loadstat/loadStatThun
 import {LoadStatFilter} from "../../redux/loadstat/types";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {DelayedLaunch} from "../../utils/DelayedLaunch";
-import {LoadStatListResponse} from "../../ekb2-api";
 import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {Pagginator} from "../../redux/types";
 import {GridSortModel} from "@mui/x-data-grid";
-
-// todo: засунуть настройки фильтра в сторе
-// interface LocalFilter {
-//     regFrom: Date;
-//     regTo?: Date | undefined;
-//     orgId: string;
-//     sessPrntOrgId: string;
-//     sessOrgId: string;
-//     packetName: string;
-//     curPstate: string;
-//     message: string;
-//     ip: string;
-//     loadMethod: string;
-//     isTest: string;
-// };
-
-// const defaultFilter = {
-//     regFrom: DateUtils.subtractDays(new Date(), 7),
-//     regTo: new Date(),
-//     orgId: '',
-//     sessPrntOrgId: '',
-//     sessOrgId: '',
-//     packetName: '',
-//     curPstate: '',
-//     message: '',
-//     ip: '',
-//     loadMethod: '',
-//     isTest: '',
-// } as LocalFilter;
 
 export interface LoadingStatFilterFormProps {
     height: number,
@@ -62,32 +31,6 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
     const { sorter }: { sorter: GridSortModel } = useAppSelector((state: RootState) => state.loadStatState);
 
     const [refreshKey, setRefreshKey] = useState(0);
-
-    //const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
-
-    // useEffect(() => {
-    //     if(currentSToken && filter.regFrom) {
-    //         delayedSetFilter.runDelayed(() => {
-    //             // dispatch(setLoadStatFilter({
-    //             //     regFrom: DateUtils.toString(filter.regFrom),
-    //             //     regTo: DateUtils.toString(filter.regTo),
-    //             //     orgId: filter.orgId,
-    //             //     sessOrgId: filter.sessOrgId,
-    //             //     packetName: filter.packetName,
-    //             //     curPstate: filter.curPstate,
-    //             // } as LoadStatFilter));
-    //             dispatch(setLoadStatFilter(filter));
-    //         }, 1000)
-    //     }
-    // }, [filter, refreshKey]);
-
-    // const handleChangeFilter = (filter: LoadStatFilter) => {
-    //     if (currentSToken && filter.regFrom) {
-    //         delayedSetFilter.runDelayed(() => {
-    //             dispatch(setLoadStatFilter(filter));
-    //         }, 1000)
-    //     }
-    // };
 
     useEffect(() => {
         if(currentSToken) {

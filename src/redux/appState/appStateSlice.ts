@@ -7,7 +7,7 @@ export const appStateSlice = createSlice({
     name: "appStateState",
     initialState: emptyState,
     reducers: {
-        setCurrentSToken: (state: AppState, action: PayloadAction<string | undefined>) => {
+        setCurrentSToken: (state: AppState, action: PayloadAction<string | undefined | null>) => {
             state.currentSToken = action.payload
         },
         setSelectedPage: (state: AppState, action: PayloadAction<string>) => {

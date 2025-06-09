@@ -15,7 +15,7 @@ const BlockingErrorView = () => {
     const { blockingError, blockingCallback } = useAppSelector((state: RootState) => state.appStateState);
 
     const onContinue = () => {
-        dispatch(appStateSlice.actions.setBlockingError(undefined));
+        dispatch(appStateSlice.actions.setBlockingError(null));
         if(blockingCallback) blockingCallback.call(this, []);
     }
     return <Backdrop className={classes.backdrop} open={!!(blockingError)}>

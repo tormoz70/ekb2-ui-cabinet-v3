@@ -1,6 +1,6 @@
 
 export interface AppState {
-    currentSToken: string | undefined,
+    currentSToken: string | undefined | null,
     selectedPage: string | undefined,
     navOpened: boolean,
     loginOpened: boolean,
