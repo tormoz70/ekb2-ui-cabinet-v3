@@ -14,8 +14,8 @@ export interface LoadStatState {
 }
 
 export interface LoadStatFilter {
-    regFrom: String;
-    regTo?: String | undefined;
+    regFrom: string;
+    regTo?: string | undefined;
     orgId: string;
     sessPrntOrgId: string;
     sessOrgId: string;

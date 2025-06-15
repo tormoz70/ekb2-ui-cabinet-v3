@@ -15,7 +15,7 @@ const PageWrapper = (props: Props) => {
       dispatch(appStateSlice.actions.setSelectedPage(props.state))
     }
 
-  }, [dispatch, props]);
+  }, [props]);
 
   return (
     <>{props.children}</>

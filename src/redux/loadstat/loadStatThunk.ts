@@ -19,7 +19,7 @@ export const loadLoadStat: any = (stoken: string, filter: LoadStatFilter, paggin
         }
         dispatch(loadStatSlice.actions.loadLoadStatSuccess(response));
     } catch (error) {
-        debugger;
+        //debugger;
         dispatch(loadStatSlice.actions.loadLoadStatFailed(error));
     }
 };

@@ -14,6 +14,7 @@ import Button from "@mui/material/Button";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {Pagginator} from "../../redux/types";
 import {GridSortModel} from "@mui/x-data-grid";
+import {SsoUser} from "../../ekb2-api";
 
 export interface LoadingStatFilterFormProps {
     height: number,
@@ -24,8 +25,8 @@ const delayedSetFilter: DelayedLaunch = new DelayedLaunch();
 export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps) {
     const dispatch = useAppDispatch();
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
+    const { user }: {user: SsoUser} = useAppSelector((state: RootState) => state.userProfileState)
     const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.loadStatState);
-    const { isLoaded }: { isLoaded: boolean } = useAppSelector((state: RootState) => state.loadStatState);
     const { filter }: { filter: LoadStatFilter } = useAppSelector((state: RootState) => state.loadStatState);
     const { pagginator }: { pagginator: Pagginator } = useAppSelector((state: RootState) => state.loadStatState);
     const { sorter }: { sorter: GridSortModel } = useAppSelector((state: RootState) => state.loadStatState);
@@ -38,7 +39,16 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
                 dispatch(loadLoadStat(currentSToken, filter, pagginator, sorter));
             }, 1000);
         }
-    }, [filter]);
+    }, [filter, refreshKey]);
+
+    useEffect(() => {
+        if(!filter.orgId) {
+            dispatch(setLoadStatFilter({
+                ...filter,
+                orgId: user.orgId
+            } as LoadStatFilter));
+        }
+    }, [user]);
 
     const handleChangeRegFrom = (e) => {
         dispatch(setLoadStatFilter({
@@ -79,6 +89,7 @@ export default function LoadingStatFilterForm (props: LoadingStatFilterFormProps
         } as LoadStatFilter));
     };
 
+    var prevKey = 0;
     const handleRefresh = () => {
         setRefreshKey(prevKey => prevKey + 1);
     };

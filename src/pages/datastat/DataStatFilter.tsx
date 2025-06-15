@@ -12,19 +12,14 @@ import {ListCommonDto, SsoUser} from "../../ekb2-api";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
-import {setDataStatFilter} from "../../redux/datastat/dataStatThunk";
+import {loadDataStat, setDataStatFilter} from "../../redux/datastat/dataStatThunk";
 import {DataStatFilter} from "../../redux/datastat/types";
 import AsyncAutocomplete from "../../components/combobox/AsyncAutocomplete";
 import {filmsApi} from "../../api/filmsApi";
 import {sroomsApi} from "../../api/sroomsApi";
-
-interface LocalFilter {
-    showDateFrom: Date;
-    showDateTo?: Date | undefined;
-    orgId: number;
-    selectedSRoomId: number | undefined;
-    selectedPuId: number | undefined;
-};
+import {LoadStatFilter} from "../../redux/loadstat/types";
+import {Pagginator} from "../../redux/types";
+import {GridSortModel} from "@mui/x-data-grid";
 
 export interface DataStatFilterFormProps {
     height: number,
@@ -37,37 +32,28 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const { currentSToken } = useAppSelector((state: RootState) => state.appStateState);
     const { user }: {user: SsoUser} = useAppSelector((state: RootState) => state.userProfileState)
     const { isLoading }: { isLoading: boolean } = useAppSelector((state: RootState) => state.dataStatState);
+    const { filter }: { filter: DataStatFilter } = useAppSelector((state: RootState) => state.dataStatState);
+    const { pagginator }: { pagginator: Pagginator } = useAppSelector((state: RootState) => state.dataStatState);
+    const { sorter }: { sorter: GridSortModel } = useAppSelector((state: RootState) => state.dataStatState);
+
     const [refreshKey, setRefreshKey] = useState(0);
-    const [selectedFilm, setSelectedFilm] = useState<ListCommonDto>(null);
-    const [selectedSRoom, setSelectedSRoom] = useState<ListCommonDto>(null);
-
-    const defaultFilter = {
-        showDateFrom: DateUtils.subtractDays(new Date(), 7),
-        showDateTo: DateUtils.addDays(new Date(), 2),
-        orgId: user.orgId,
-        sroomId: undefined,
-        selectedPuId: undefined,
-    } as LocalFilter;
-
-    const [localFilter, setLocalFilter] = useState<LocalFilter>(defaultFilter);
 
     useEffect(() => {
-        if(currentSToken && localFilter.showDateFrom) {
+        if(currentSToken) {
             delayedSetFilter.runDelayed(() => {
-                dispatch(setDataStatFilter({
-                    showDateFrom: DateUtils.toString(localFilter.showDateFrom),
-                    showDateTo: DateUtils.toString(localFilter.showDateTo),
-                    orgId: localFilter.orgId || user.orgId,
-                    sroomId: localFilter.selectedSRoomId,
-                    selectedPuId: localFilter.selectedPuId,
-                } as DataStatFilter));
-            }, 1000)
+                dispatch(loadDataStat(currentSToken, filter, pagginator, sorter));
+            }, 1000);
         }
-    }, [localFilter, refreshKey]);
+    }, [filter, refreshKey]);
 
-    const handleRefresh = () => {
-        setRefreshKey(prevKey => prevKey + 1);
-    };
+    useEffect(() => {
+        if(!filter.orgId) {
+            dispatch(setDataStatFilter({
+                ...filter,
+                orgId: user.orgId
+            } as DataStatFilter));
+        }
+    }, [user]);
 
     const fetchFilms = async (query) => {
         try {
@@ -79,7 +65,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     };
     const fetchSRooms = async (query) => {
         try {
-            let currentOrgId: number = localFilter.orgId || user.orgId as number;
+            let currentOrgId: number = filter.orgId as number || user.orgId as number;
             return await sroomsApi(currentSToken, currentOrgId, query);
         } catch (error) {
             console.error('Error fetching srooms:', error);
@@ -87,20 +73,44 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
         }
     };
 
+    const handleChangeShowDateFrom = (e) => {
+        dispatch(setDataStatFilter({
+            ...filter,
+            showDateFrom: DateUtils.toString(e)
+        } as DataStatFilter));
+    };
+
+    const handleChangeShowDateTo = (e) => {
+        dispatch(setDataStatFilter({
+            ...filter,
+            showDateTo: DateUtils.toString(e)
+        } as DataStatFilter));
+    };
+
+    const handleChangeOrgId = (e) => {
+        dispatch(setDataStatFilter({
+            ...filter,
+            orgId: e.target.value
+        } as DataStatFilter));
+    };
+
     const handleFilmChange = (selected: ListCommonDto) => {
-        setSelectedFilm(selected)
-        setLocalFilter({
-            ...localFilter,
+        dispatch(setDataStatFilter({
+            ...filter,
             selectedPuId: selected ? selected.id : undefined
-        } as LocalFilter)
+        } as LoadStatFilter));
     };
 
     const handleSRoomChange = (selected: ListCommonDto) => {
-        setSelectedSRoom(selected)
-        setLocalFilter({
-            ...localFilter,
+        dispatch(setDataStatFilter({
+            ...filter,
             selectedSRoomId: selected ? selected.id : undefined
-        } as LocalFilter)
+        } as LoadStatFilter));
+    };
+
+    var prevKey = 0;
+    const handleRefresh = () => {
+        setRefreshKey(prevKey => prevKey + 1);
     };
 
     return(
@@ -133,39 +143,28 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                             ampm={false}
                             format="dd.MM.yyyy HH:mm"
                             label="Сеанс с"
-                            value={localFilter.showDateFrom}
-                            onChange={(newValue) => setLocalFilter({
-                                ...localFilter,
-                                regFrom: newValue
-                            } as LocalFilter)}
+                            value={DateUtils.fromString(filter.showDateFrom)}
+                            onChange={handleChangeShowDateFrom}
                         />
                         <DateTimePicker
                             localeText={localConfigs.dateTimePicker}
                             ampm={false}
                             format="dd.MM.yyyy HH:mm"
                             label="Сеанс по"
-                            value={localFilter.showDateTo}
-                            onChange={(newValue) => setLocalFilter({
-                                ...localFilter,
-                                regTo: newValue
-                            } as LocalFilter)}
+                            value={DateUtils.fromString(filter.showDateTo)}
+                            onChange={handleChangeShowDateTo}
                         />
                         <TextField
                             label="Демонстратор"
                             name="orgIdInput"
-                            value={localFilter.orgId}
-                            onChange={(e) => {
-                                setLocalFilter({
-                                    ...localFilter,
-                                    orgId: e.target.value
-                                } as LocalFilter)
-                            }}
+                            value={filter.orgId}
+                            onChange={handleChangeOrgId}
                         />
                         <AsyncAutocomplete
                             width={150}
                             label="Кинозал"
                             fetchOptions={fetchSRooms}
-                            value={selectedSRoom}
+                            value={filter.selectedSRoomId}
                             onChange={handleSRoomChange}
                         />
                         <AsyncAutocomplete
@@ -173,7 +172,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                             dropdownWidth={'450px'}
                             label="Фильм"
                             fetchOptions={fetchFilms}
-                            value={selectedFilm}
+                            value={filter.selectedPuId}
                             onChange={handleFilmChange}
                         />
 
