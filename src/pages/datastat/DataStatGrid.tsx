@@ -1,13 +1,14 @@
 import {GridColDef, GridSortModel} from '@mui/x-data-grid';
 import DGrid from "../../components/dgrid/DGrid";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useMemo, useRef} from "react";
 import {DateUtils} from "../../utils/DateUtils";
 import {DataStatListResponse, DataStatSessions} from "../../ekb2-api";
 import sizeConfigs from "../../configs/sizeConfigs";
-import {Pagginator, Sorter} from "../../redux/types";
+import {Pagginator} from "../../redux/types";
 import {loadDataStat, setDataStatPagginator, setDataStatSorter} from "../../redux/datastat/dataStatThunk";
 import {DataStatFilter} from "../../redux/datastat/types";
+import {loadLoadStat} from "../../redux/loadstat/loadStatThunk";
 
 const columns: GridColDef<(DataStatSessions[])[number]>[] = [
   { field: 'sessId',
@@ -161,6 +162,7 @@ export default function DataStatGrid(props: DataStatGridProps) {
   const { sorter }: { sorter: GridSortModel } = useAppSelector((state: RootState) => state.dataStatState);
   const { response }: { response: DataStatListResponse } = useAppSelector((state: RootState) => state.dataStatState);
   const { isLoading }: { response: DataStatListResponse } = useAppSelector((state: RootState) => state.dataStatState);
+  const { isLoaded }: { isLoaded: boolean } = useAppSelector((state: RootState) => state.dataStatState);
 
 // --- pagination & sorting
   const rowCountRef = useRef(response?.totalCount || 0);
@@ -170,31 +172,18 @@ export default function DataStatGrid(props: DataStatGridProps) {
     }
     return rowCountRef.current;
   }, [response?.totalCount]);
-  // const [paginationModel, setPaginationModel] = useState({
-  //   page: 0,
-  //   pageSize: 50,
-  // });
-  // const [sortModel, setSortModel] = useState<GridSortModel>([
-  //   {
-  //     field: 'id',
-  //     sort: 'desc',
-  //   },
-  // ]);
-  // const handleSortChange = (model: GridSortModel) => {
-  //   const modelJson = JSON.stringify(model)
-  //   console.log(" --- handleSortChange model: " + modelJson);
-  //   if (modelJson !== JSON.stringify(sortModel)) {
-  //     setSortModel(model);
-  //   }
-  // };
 // ------------------------------------------------------------------------------
 
-  const setPagginator = () => {
-    dispatch(setDataStatPagginator(pagginator));
+  const setPagginator = (model) => {
+    if(model) {
+      dispatch(setDataStatPagginator(model));
+    }
   }
 
-  const setSorter = () => {
-    dispatch(setDataStatSorter(sorter));
+  const setSorter = (model) => {
+    if (model) {
+      dispatch(setDataStatSorter(model));
+    }
   }
 
   // useEffect(() => {
@@ -210,10 +199,9 @@ export default function DataStatGrid(props: DataStatGridProps) {
   // }, [sortModel]);
 
   useEffect(() => {
-    if(selectedPage === 'datastat') {
-      console.log(" --- selectedPage: " + selectedPage);
-      if(!pagginator.page) {
-        setPagginator();
+    if(!isLoaded && selectedPage === 'datastat') {
+      if(currentSToken && pagginator && pagginator.page !== undefined) {
+        dispatch(loadDataStat(currentSToken, filter, pagginator, sorter));
       }
     }
   }, [selectedPage]);
@@ -222,7 +210,7 @@ export default function DataStatGrid(props: DataStatGridProps) {
     if(currentSToken && pagginator && pagginator.page !== undefined) {
       dispatch(loadDataStat(currentSToken, filter, pagginator, sorter));
     }
-  }, [filter, pagginator, sorter]);
+  }, [pagginator, sorter]);
 
   return (
       <DGrid
@@ -240,7 +228,6 @@ export default function DataStatGrid(props: DataStatGridProps) {
           sortingMode="server"
           sortModel={sorter}
           onSortModelChange={setSorter}
-
       />
 
   );

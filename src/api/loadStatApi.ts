@@ -4,7 +4,6 @@ import axios from 'axios';
 import {LoadStatFilter} from "../redux/loadstat/types";
 import {Pagginator} from "../redux/types";
 import {GridSortModel} from "@mui/x-data-grid";
-import {DateUtils} from "../utils/DateUtils";
 
 const baseApiUrl = process.env.REACT_APP_API_URL + "/api/v1";
 const loadMenuUrl = baseApiUrl + "/loadstat/loadlog";

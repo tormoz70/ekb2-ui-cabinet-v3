@@ -4,6 +4,7 @@ import axios from 'axios';
 import {Pagginator} from "../redux/types";
 import {DataStatFilter} from "../redux/datastat/types";
 import {GridSortModel} from "@mui/x-data-grid";
+import {StringUtils} from "../utils/StringUtils";
 
 const baseApiUrl = process.env.REACT_APP_API_URL + "/api/v1";
 const loadMenuUrl = baseApiUrl + "/datastat";
@@ -25,8 +26,8 @@ export async function dataStatApi(
         queryParams.push(['limit', ""+pagginator.pageSize]);
         queryParams.push(['show_date_from', filter.showDateFrom]);
         queryParams.push(['show_date_to', filter.showDateTo]);
-        queryParams.push(['org_id', filter.orgId]);
-        if(filter.sroomId) queryParams.push(['sroom_id', filter.sroomId]);
+        queryParams.push(['org_id', StringUtils.isEmpty(filter.orgId) ? "0" : filter.orgId]);
+        if(filter.selectedSRoomId) queryParams.push(['sroom_id', filter.selectedSRoomId]);
         if(filter.selectedPuId) queryParams.push(['selected_pu_id', filter.selectedPuId]);
         if(sorter) queryParams.push(['sort', sorterJson]);
         const requestConfig = {

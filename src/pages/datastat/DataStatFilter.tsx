@@ -23,9 +23,9 @@ import {GridSortModel} from "@mui/x-data-grid";
 
 export interface DataStatFilterFormProps {
     height: number,
-};
+}
 
-const delayedSetFilter: DelayedLaunch = new DelayedLaunch();
+const delayedSetDataStatFilter: DelayedLaunch = new DelayedLaunch();
 
 export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const dispatch = useAppDispatch();
@@ -40,7 +40,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
 
     useEffect(() => {
         if(currentSToken) {
-            delayedSetFilter.runDelayed(() => {
+            delayedSetDataStatFilter.runDelayed(() => {
                 dispatch(loadDataStat(currentSToken, filter, pagginator, sorter));
             }, 1000);
         }
@@ -172,7 +172,8 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                             dropdownWidth={'450px'}
                             label="Фильм"
                             fetchOptions={fetchFilms}
-                            value={filter.selectedPuId}
+                            //value={filter.selectedPu}
+                            initialValue={filter.selectedPu}
                             onChange={handleFilmChange}
                         />
 

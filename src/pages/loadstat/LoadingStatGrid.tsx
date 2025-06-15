@@ -1,7 +1,7 @@
 import {GridColDef, GridSortModel} from '@mui/x-data-grid';
 import DGrid from "../../components/dgrid/DGrid";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useMemo, useRef} from "react";
 import {
   loadLoadStat,
   setLoadStatPagginator,
