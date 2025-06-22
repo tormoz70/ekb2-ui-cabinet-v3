@@ -3,11 +3,19 @@ import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useEffect, useState} from "react";
 
-const AsyncAutocomplete = ({ label, fetchOptions, value, onChange, width, dropdownWidth }) => {
+const AsyncAutocomplete = ({ label, fetchOptions, onChange, width, dropdownWidth, initialValue }) => {
+    const [value, setValue] = useState(null);
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [inputValue, setInputValue] = useState('');
+
+    useEffect(() => {
+        if (initialValue) {
+            setValue(initialValue);
+            setInputValue(initialValue.name || ''); // Assuming your options have a 'label' property
+        }
+    }, [initialValue]);
 
     const fetchData = async () => {
         let active = true;
@@ -15,7 +23,7 @@ const AsyncAutocomplete = ({ label, fetchOptions, value, onChange, width, dropdo
         const _fetchData = async () => {
             setLoading(true);
             try {
-                const results = await fetchOptions(inputValue);
+                const results = await fetchOptions(inputValue, value ? value.id : undefined);
                 if (active) {
                     setOptions(results.data);
                 }

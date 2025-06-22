@@ -55,9 +55,19 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
         }
     }, [user]);
 
-    const fetchFilms = async (query) => {
+    const [selectedValue, setSelectedValue] = useState(null);
+
+    // Simulate getting value from API after delay
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setSelectedValue({id: 1000024756, name: "Балерина (121015625)"});
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const fetchFilms = async (query, id) => {
         try {
-            return await filmsApi(currentSToken, query);
+            return await filmsApi(currentSToken, query, id);
         } catch (error) {
             console.error('Error fetching films:', error);
             return [];
@@ -173,7 +183,9 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                             label="Фильм"
                             fetchOptions={fetchFilms}
                             //value={filter.selectedPu}
-                            initialValue={filter.selectedPu}
+                            initialValue={selectedValue}
+                            //initialValue={"121015625"}
+                            //externalValue={selectedValue}
                             onChange={handleFilmChange}
                         />
 

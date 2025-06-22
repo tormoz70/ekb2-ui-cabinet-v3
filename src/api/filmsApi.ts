@@ -1,20 +1,23 @@
 import {handleResponse} from "./handlers/responseHandler";
 import {handleError} from "./handlers/errorHandler";
 import axios from 'axios';
-import {Pagginator, Sorter} from "../redux/types";
-import {DataStatFilter} from "../redux/datastat/types";
 
 const baseApiUrl = process.env.REACT_APP_API_URL + "/api/v1";
-const loadMenuUrl = baseApiUrl + "/loo/films";
+const loadUrl = baseApiUrl + "/loo/films";
 
 
 export async function filmsApi(
     stoken: string,
     filter: string,
+    id: number
 ) {
     if(stoken) {
         const queryParams = [];
-        queryParams.push(['filter', filter]);
+        if(id && id > 0) {
+            queryParams.push(['id', id]);
+        } else {
+            queryParams.push(['filter', filter]);
+        }
         const requestConfig = {
             headers: {
                 'Content-Type': 'application/json',
@@ -22,7 +25,7 @@ export async function filmsApi(
             },
             params: new URLSearchParams(queryParams)
         };
-        return await axios.get(loadMenuUrl, requestConfig)
+        return await axios.get(loadUrl, requestConfig)
             .then(handleResponse)
             .catch(handleError);
     }
