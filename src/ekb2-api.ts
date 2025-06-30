@@ -3766,11 +3766,11 @@ export interface LoadStatLog {
  * Данные
  * @example "..."
  */
-export interface ListCommonDto {
+export interface ListItemDto {
   /** Идентификатор */
-  id?: object;
+  id: number;
   /** Значение */
-  name?: string;
+  name: string;
 }
 
 export interface ListResponse {
@@ -3778,7 +3778,7 @@ export interface ListResponse {
    * Данные
    * @example "..."
    */
-  data: ListCommonDto[];
+  data: ListItemDto[];
   /**
    * Примененные фильты
    * @example "..."

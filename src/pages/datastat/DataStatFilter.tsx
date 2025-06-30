@@ -8,7 +8,7 @@ import {DateUtils} from "../../utils/DateUtils";
 import {useEffect, useState} from "react";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {DelayedLaunch} from "../../utils/DelayedLaunch";
-import {ListCommonDto, SsoUser} from "../../ekb2-api";
+import {ListItemDto, ListResponse, SsoUser} from "../../ekb2-api";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -37,14 +37,37 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const { sorter }: { sorter: GridSortModel } = useAppSelector((state: RootState) => state.dataStatState);
 
     const [refreshKey, setRefreshKey] = useState(0);
+    const [selectedFilm, setSelectedFilm] = useState(null as ListItemDto | undefined);
+    const [selectedFromDate, setSelectedFromDate] = useState(DateUtils.subtractDays(new Date(), 7));
+    const [selectedToDate, setSelectedToDate] = useState(DateUtils.addDays(new Date(), 7));
 
     useEffect(() => {
         if(currentSToken) {
-            delayedSetDataStatFilter.runDelayed(() => {
+            //delayedSetDataStatFilter.runDelayed(() => {
                 dispatch(loadDataStat(currentSToken, filter, pagginator, sorter));
-            }, 1000);
+            //}, 1000);
         }
     }, [filter, refreshKey]);
+
+    useEffect(() => {
+            dispatch(setDataStatFilter({
+                ...filter,
+                showDateFrom: DateUtils.toString(selectedFromDate)
+            } as DataStatFilter));
+    }, [selectedFromDate]);
+    useEffect(() => {
+        dispatch(setDataStatFilter({
+            ...filter,
+            showDateTo: DateUtils.toString(selectedToDate)
+        } as DataStatFilter));
+    }, [selectedToDate]);
+
+    useEffect(() => {
+        dispatch(setDataStatFilter({
+            ...filter,
+            selectedPuId: selectedFilm?.id
+        } as DataStatFilter));
+    }, [selectedFilm]);
 
     useEffect(() => {
         if(!filter.orgId) {
@@ -55,23 +78,18 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
         }
     }, [user]);
 
-    const [selectedValue, setSelectedValue] = useState(null);
 
-    // Simulate getting value from API after delay
     useEffect(() => {
         const timer = setTimeout(() => {
-            setSelectedValue({id: 1000024756, name: "Балерина (121015625)"});
-        }, 2000);
+            fetchFilms(undefined, filter.selectedPuId).then((a) => {
+                setSelectedFilm(a.data.length > 0 ? a.data[0] : null);
+            });
+        }, 500);
         return () => clearTimeout(timer);
     }, []);
 
-    const fetchFilms = async (query, id) => {
-        try {
-            return await filmsApi(currentSToken, query, id);
-        } catch (error) {
-            console.error('Error fetching films:', error);
-            return [];
-        }
+    const fetchFilms = async (query, id): Promise<ListResponse> => {
+        return await filmsApi(currentSToken, query, id);
     };
     const fetchSRooms = async (query) => {
         try {
@@ -84,17 +102,11 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     };
 
     const handleChangeShowDateFrom = (e) => {
-        dispatch(setDataStatFilter({
-            ...filter,
-            showDateFrom: DateUtils.toString(e)
-        } as DataStatFilter));
+        setSelectedFromDate(e);
     };
 
     const handleChangeShowDateTo = (e) => {
-        dispatch(setDataStatFilter({
-            ...filter,
-            showDateTo: DateUtils.toString(e)
-        } as DataStatFilter));
+        setSelectedToDate(e);
     };
 
     const handleChangeOrgId = (e) => {
@@ -104,14 +116,15 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
         } as DataStatFilter));
     };
 
-    const handleFilmChange = (selected: ListCommonDto) => {
+    const handleFilmChange = (selected: ListItemDto) => {
+        setSelectedFilm(selected);
         dispatch(setDataStatFilter({
             ...filter,
             selectedPuId: selected ? selected.id : undefined
         } as LoadStatFilter));
     };
 
-    const handleSRoomChange = (selected: ListCommonDto) => {
+    const handleSRoomChange = (selected: ListItemDto) => {
         dispatch(setDataStatFilter({
             ...filter,
             selectedSRoomId: selected ? selected.id : undefined
@@ -153,7 +166,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                             ampm={false}
                             format="dd.MM.yyyy HH:mm"
                             label="Сеанс с"
-                            value={DateUtils.fromString(filter.showDateFrom)}
+                            value={selectedFromDate}
                             onChange={handleChangeShowDateFrom}
                         />
                         <DateTimePicker
@@ -161,7 +174,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                             ampm={false}
                             format="dd.MM.yyyy HH:mm"
                             label="Сеанс по"
-                            value={DateUtils.fromString(filter.showDateTo)}
+                            value={selectedToDate}
                             onChange={handleChangeShowDateTo}
                         />
                         <TextField
@@ -183,7 +196,7 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                             label="Фильм"
                             fetchOptions={fetchFilms}
                             //value={filter.selectedPu}
-                            initialValue={selectedValue}
+                            initialValue={selectedFilm}
                             //initialValue={"121015625"}
                             //externalValue={selectedValue}
                             onChange={handleFilmChange}

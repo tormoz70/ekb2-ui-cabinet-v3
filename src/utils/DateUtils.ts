@@ -44,8 +44,8 @@ export class DateUtils {
         return undefined;
     }
 
-    static fromString(date: string | undefined): Date | undefined {
-        return date ? new Date(date) : undefined;
+    static fromString(date: string): Date {
+        return new Date(date);
     }
 
     static formatIsoDate(dateString: string): string {

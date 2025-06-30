@@ -38,6 +38,5 @@ export interface DataStatFilter {
     orgId?: string;
     selectedSRoomId?: number;
     selectedPuId?: number;
-    selectedPu?: string;
 };
 

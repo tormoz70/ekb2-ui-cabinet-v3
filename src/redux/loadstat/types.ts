@@ -15,7 +15,7 @@ export interface LoadStatState {
 
 export interface LoadStatFilter {
     regFrom: string;
-    regTo?: string | undefined;
+    regTo: string;
     orgId: string;
     sessPrntOrgId: string;
     sessOrgId: string;
@@ -29,7 +29,7 @@ export interface LoadStatFilter {
 
 const defaultFilter = {
     regFrom: DateUtils.toString(DateUtils.subtractDays(new Date(), 7)),
-    regTo: DateUtils.toString(new Date()),
+    regTo: DateUtils.toString(DateUtils.addDays(new Date(), 1)),
     orgId: '',
     sessPrntOrgId: '',
     sessOrgId: '',
