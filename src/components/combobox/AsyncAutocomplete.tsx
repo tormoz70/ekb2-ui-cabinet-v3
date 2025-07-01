@@ -2,6 +2,9 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useEffect, useState} from "react";
+import {DelayedLaunch} from "../../utils/DelayedLaunch";
+
+const delayedLoadOptions: DelayedLaunch = new DelayedLaunch();
 
 const AsyncAutocomplete = ({ label, fetchOptions, onChange, width, dropdownWidth, initialValue }) => {
     const [value, setValue] = useState(null);
@@ -17,6 +20,7 @@ const AsyncAutocomplete = ({ label, fetchOptions, onChange, width, dropdownWidth
         }
     }, [initialValue]);
 
+    let debounceTimer = null;
     const fetchData = async () => {
         let active = true;
 
@@ -36,11 +40,12 @@ const AsyncAutocomplete = ({ label, fetchOptions, onChange, width, dropdownWidth
             }
         };
 
-        const debounceTimer = setTimeout(_fetchData, 500);
+        delayedLoadOptions.runDelayed(() => {
+            _fetchData();
+        }, 1000);
 
         return () => {
             active = false;
-            clearTimeout(debounceTimer);
         };
 
     }

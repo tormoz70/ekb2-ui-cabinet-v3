@@ -1,16 +1,13 @@
 import DBGFilter from "../../components/dgrid/DBGFilter";
 import {DateTimePicker, LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import Box from "@mui/material/Box";
 import {localConfigs} from "../../configs/localConfigs";
-import {TextField} from "@mui/material";
+import {Box, Button, TextField, CircularProgress, InputLabelProps} from "@mui/material";
 import {DateUtils} from "../../utils/DateUtils";
 import {useEffect, useState} from "react";
 import {RootState, useAppDispatch, useAppSelector} from "../../redux/store";
 import {DelayedLaunch} from "../../utils/DelayedLaunch";
 import {ListItemDto, ListResponse, SsoUser} from "../../ekb2-api";
-import Button from "@mui/material/Button";
-import CircularProgress from "@mui/material/CircularProgress";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {loadDataStat, setDataStatFilter} from "../../redux/datastat/dataStatThunk";
 import {DataStatFilter} from "../../redux/datastat/types";
@@ -37,15 +34,14 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     const { sorter }: { sorter: GridSortModel } = useAppSelector((state: RootState) => state.dataStatState);
 
     const [refreshKey, setRefreshKey] = useState(0);
-    const [selectedFilm, setSelectedFilm] = useState(null as ListItemDto | undefined);
+    const [selectedOrg, setSelectedOrg] = useState(undefined as string | undefined);
+    const [selectedFilm, setSelectedFilm] = useState(undefined as ListItemDto | undefined);
     const [selectedFromDate, setSelectedFromDate] = useState(DateUtils.subtractDays(new Date(), 7));
     const [selectedToDate, setSelectedToDate] = useState(DateUtils.addDays(new Date(), 7));
 
     useEffect(() => {
         if(currentSToken) {
-            //delayedSetDataStatFilter.runDelayed(() => {
-                dispatch(loadDataStat(currentSToken, filter, pagginator, sorter));
-            //}, 1000);
+            dispatch(loadDataStat(currentSToken, filter, pagginator, sorter));
         }
     }, [filter, refreshKey]);
 
@@ -70,35 +66,35 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     }, [selectedFilm]);
 
     useEffect(() => {
-        if(!filter.orgId) {
+        const _fetchData = async () => {
             dispatch(setDataStatFilter({
                 ...filter,
-                orgId: user.orgId
+                orgId: selectedOrg
             } as DataStatFilter));
-        }
-    }, [user]);
+        };
+        delayedSetDataStatFilter.runDelayed(() => {
+            _fetchData();
+        }, 800);
 
+    }, [selectedOrg]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
+            setSelectedOrg(filter.orgId ?? user.orgId);
+
             fetchFilms(undefined, filter.selectedPuId).then((a) => {
                 setSelectedFilm(a.data.length > 0 ? a.data[0] : null);
             });
-        }, 500);
+        }, 1000);
         return () => clearTimeout(timer);
     }, []);
 
     const fetchFilms = async (query, id): Promise<ListResponse> => {
-        return await filmsApi(currentSToken, query, id);
+        return await filmsApi(currentSToken, query, query ? null : id);
     };
     const fetchSRooms = async (query) => {
-        try {
-            let currentOrgId: number = filter.orgId as number || user.orgId as number;
-            return await sroomsApi(currentSToken, currentOrgId, query);
-        } catch (error) {
-            console.error('Error fetching srooms:', error);
-            return [];
-        }
+        let currentOrgId: number = filter.orgId as number || user.orgId as number;
+        return await sroomsApi(currentSToken, currentOrgId, query);
     };
 
     const handleChangeShowDateFrom = (e) => {
@@ -110,18 +106,11 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
     };
 
     const handleChangeOrgId = (e) => {
-        dispatch(setDataStatFilter({
-            ...filter,
-            orgId: e.target.value
-        } as DataStatFilter));
+        setSelectedOrg(e.target.value);
     };
 
     const handleFilmChange = (selected: ListItemDto) => {
         setSelectedFilm(selected);
-        dispatch(setDataStatFilter({
-            ...filter,
-            selectedPuId: selected ? selected.id : undefined
-        } as LoadStatFilter));
     };
 
     const handleSRoomChange = (selected: ListItemDto) => {
@@ -180,8 +169,9 @@ export default function DataStatFilterForm (props: DataStatFilterFormProps) {
                         <TextField
                             label="Демонстратор"
                             name="orgIdInput"
-                            value={filter.orgId}
+                            value={selectedOrg}
                             onChange={handleChangeOrgId}
+                            slotProps={{ inputLabel: { shrink: true } }}
                         />
                         <AsyncAutocomplete
                             width={150}

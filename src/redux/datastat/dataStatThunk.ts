@@ -13,11 +13,12 @@ export const loadDataStat: any = (stoken: string, filter: DataStatFilter, paggin
     try {
         dispatch(dataStatSlice.actions.loadDataStatStart());
         const response: DataStatListResponse = await dataStatApi(stoken, filter, pagginator, sorter);
-        console.log("loadLoadStatApi-response: " + response);
+        //console.log("loadLoadStatApi-response: " + response);
         if(response) {
-            console.log("response: ", response);
+            //console.log("response: ", response);
+            dispatch(dataStatSlice.actions.loadDataStatSuccess(response));
         }
-        dispatch(dataStatSlice.actions.loadDataStatSuccess(response));
+
     } catch (error) {
         //debugger;
         dispatch(dataStatSlice.actions.loadDataStatFailed(error));
