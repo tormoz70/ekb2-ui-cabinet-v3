@@ -1,7 +1,7 @@
 import {handleResponse} from "./handlers/responseHandler";
 import {handleError} from "./handlers/errorHandler";
 import axios from 'axios';
-import {ListItemDto, ListResponse} from "../ekb2-api";
+import {ListResponse} from "../ekb2-api";
 
 const baseApiUrl = process.env.REACT_APP_API_URL + "/api/v1";
 const loadUrl = baseApiUrl + "/loo/films";

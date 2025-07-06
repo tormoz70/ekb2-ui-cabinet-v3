@@ -1,6 +1,5 @@
 /* eslint-disable */
 /* tslint:disable */
-// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -13,7 +12,7 @@
 /** Описание ошибки */
 export interface ErrorMessageResponse {
   /** Текст сообщения */
-  errorMessage?: string;
+  msg?: string;
 }
 
 export interface RegInfoShareDto {
@@ -1378,16 +1377,7 @@ export interface Field {
   sorter?: string;
   nullsPosition?: "DEFAULT" | "NULLLAST" | "NULLFIRST";
   tooltip?: string;
-  metaType?:
-    | "UNDEFINED"
-    | "STRING"
-    | "INTEGER"
-    | "DECIMAL"
-    | "DATE"
-    | "BOOLEAN"
-    | "BLOB"
-    | "CLOB"
-    | "CURSOR";
+  metaType?: "UNDEFINED" | "STRING" | "INTEGER" | "DECIMAL" | "DATE" | "BOOLEAN" | "BLOB" | "CLOB" | "CURSOR";
   expEnabled?: boolean;
   expFormat?: string;
   expWidth?: string;
@@ -3685,58 +3675,6 @@ export interface MenuItem {
   parentId?: number;
 }
 
-/**
- * Данные
- * @example "..."
- */
-export interface ListCommonDto {
-  /** Идентификатор */
-  id?: object;
-  /** Значение */
-  name?: string;
-}
-
-export interface ListResponse {
-  /**
-   * Данные
-   * @example "..."
-   */
-  data: ListCommonDto[];
-  /**
-   * Примененные фильты
-   * @example "..."
-   */
-  filters: ListCommonResponseFilters[];
-  /**
-   * Параметр сортировки
-   * @example "+start_date"
-   */
-  sort: string;
-  /**
-   * Количество возвращаемых записей на странице
-   * @format int32
-   * @example 30
-   */
-  limit: number;
-  /**
-   * Смещение страниц относительно начала
-   * @format int32
-   * @example 3
-   */
-  offset: number;
-  /**
-   * Общее количество записей
-   * @format int64
-   * @example 3
-   */
-  totalCount: number;
-  /**
-   * Метаданные объекта data
-   * @example "..."
-   */
-  metadata?: Field[];
-}
-
 export interface LoadStatListResponse {
   /**
    * Данные
@@ -3822,6 +3760,58 @@ export interface LoadStatLog {
    * @format date-time
    */
   show_date?: string;
+}
+
+/**
+ * Данные
+ * @example "..."
+ */
+export interface ListItemDto {
+  /** Идентификатор */
+  id: number;
+  /** Значение */
+  name: string;
+}
+
+export interface ListResponse {
+  /**
+   * Данные
+   * @example "..."
+   */
+  data: ListItemDto[];
+  /**
+   * Примененные фильты
+   * @example "..."
+   */
+  filters: ListCommonResponseFilters[];
+  /**
+   * Параметр сортировки
+   * @example "+start_date"
+   */
+  sort: string;
+  /**
+   * Количество возвращаемых записей на странице
+   * @format int32
+   * @example 30
+   */
+  limit: number;
+  /**
+   * Смещение страниц относительно начала
+   * @format int32
+   * @example 3
+   */
+  offset: number;
+  /**
+   * Общее количество записей
+   * @format int64
+   * @example 3
+   */
+  totalCount: number;
+  /**
+   * Метаданные объекта data
+   * @example "..."
+   */
+  metadata?: Field[];
 }
 
 /**
@@ -4050,62 +4040,62 @@ export interface DataStatListResponse {
  */
 export interface DataStatSessions {
   /** rec_uid */
-  id?: string;
+  id: string;
   /**
    * sess_id
    * @format int64
    */
-  sessId?: number;
+  sessId: number;
   /** sesstitle_uid */
-  sessTitleUid?: string;
+  sessTitleUid: string;
   /** Регион */
-  regionRev?: string;
+  regionRev: string;
   /** Город */
-  nasPunktRev?: string;
+  nasPunktRev: string;
   /** ID кинотеатра */
-  orgId?: string;
+  orgId: string;
   /** Кинотеатр */
-  org?: string;
+  org: string;
   /** part_key */
-  partKey?: string;
+  partKey: string;
   /** Кинозал */
-  sroomName?: string;
+  sroomName: string;
   /** Сеанс */
-  sessTitle?: string;
+  sessTitle: string;
   /** Фильм (по реестру) */
-  filmNameOrig?: string;
+  filmNameOrig: string;
   /** ПУ */
-  puNum?: string;
+  puNum: string;
   /** ПУ (по реестру) */
-  puNumFound?: string;
+  puNumFound: string;
   /**
    * Дата/Время
    * @format date-time
    */
-  showDate?: string;
+  showDate: string;
   /**
    * Кол-во билетов
    * @format int64
    */
-  tckts?: number;
+  tckts: number;
   /**
    * Кол-во возвратов
    * @format int64
    */
-  tcktsStorn?: number;
+  tcktsStorn: number;
   /**
    * Кол-во беспл. билетов
    * @format int64
    */
-  tcktsFree?: number;
+  tcktsFree: number;
   /** Скидка, руб */
-  summDisc?: number;
+  summDisc: number;
   /** Выручка, руб */
-  summ?: number;
+  summ: number;
   /** Средняя цена, руб */
-  priceFact?: number;
+  priceFact: number;
   /** Фестивальный */
-  festival?: boolean;
+  festival: boolean;
 }
 
 export interface DataStatTickets {
@@ -4185,12 +4175,12 @@ export interface DataStatTickets {
 
 export interface DataStatSRooms {
   /**
-   * id
+   * sroom_id
    * @format int64
    */
-  id?: number;
+  sroomId?: number;
   /** Кинозал */
-  name?: string;
+  sroomName?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -4215,22 +4205,16 @@ export interface FullRequestParams extends Omit<RequestInit, "body"> {
   cancelToken?: CancelToken;
 }
 
-export type RequestParams = Omit<
-  FullRequestParams,
-  "body" | "method" | "query" | "path"
->;
+export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" | "path">;
 
 export interface ApiConfig<SecurityDataType = unknown> {
   baseUrl?: string;
   baseApiParams?: Omit<RequestParams, "baseUrl" | "cancelToken" | "signal">;
-  securityWorker?: (
-    securityData: SecurityDataType | null,
-  ) => Promise<RequestParams | void> | RequestParams | void;
+  securityWorker?: (securityData: SecurityDataType | null) => Promise<RequestParams | void> | RequestParams | void;
   customFetch?: typeof fetch;
 }
 
-export interface HttpResponse<D extends unknown, E extends unknown = unknown>
-  extends Response {
+export interface HttpResponse<D extends unknown, E extends unknown = unknown> extends Response {
   data: D;
   error: E;
 }
@@ -4239,7 +4223,6 @@ type CancelToken = Symbol | string | number;
 
 export enum ContentType {
   Json = "application/json",
-  JsonApi = "application/vnd.api+json",
   FormData = "multipart/form-data",
   UrlEncoded = "application/x-www-form-urlencoded",
   Text = "text/plain",
@@ -4250,8 +4233,7 @@ export class HttpClient<SecurityDataType = unknown> {
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
-  private customFetch = (...fetchParams: Parameters<typeof fetch>) =>
-    fetch(...fetchParams);
+  private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
 
   private baseApiParams: RequestParams = {
     credentials: "same-origin",
@@ -4284,15 +4266,9 @@ export class HttpClient<SecurityDataType = unknown> {
 
   protected toQueryString(rawQuery?: QueryParamsType): string {
     const query = rawQuery || {};
-    const keys = Object.keys(query).filter(
-      (key) => "undefined" !== typeof query[key],
-    );
+    const keys = Object.keys(query).filter((key) => "undefined" !== typeof query[key]);
     return keys
-      .map((key) =>
-        Array.isArray(query[key])
-          ? this.addArrayQueryParam(query, key)
-          : this.addQueryParam(query, key),
-      )
+      .map((key) => (Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key)))
       .join("&");
   }
 
@@ -4303,17 +4279,8 @@ export class HttpClient<SecurityDataType = unknown> {
 
   private contentFormatters: Record<ContentType, (input: any) => any> = {
     [ContentType.Json]: (input: any) =>
-      input !== null && (typeof input === "object" || typeof input === "string")
-        ? JSON.stringify(input)
-        : input,
-    [ContentType.JsonApi]: (input: any) =>
-      input !== null && (typeof input === "object" || typeof input === "string")
-        ? JSON.stringify(input)
-        : input,
-    [ContentType.Text]: (input: any) =>
-      input !== null && typeof input !== "string"
-        ? JSON.stringify(input)
-        : input,
+      input !== null && (typeof input === "object" || typeof input === "string") ? JSON.stringify(input) : input,
+    [ContentType.Text]: (input: any) => (input !== null && typeof input !== "string" ? JSON.stringify(input) : input),
     [ContentType.FormData]: (input: any) =>
       Object.keys(input || {}).reduce((formData, key) => {
         const property = input[key];
@@ -4330,10 +4297,7 @@ export class HttpClient<SecurityDataType = unknown> {
     [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
   };
 
-  protected mergeRequestParams(
-    params1: RequestParams,
-    params2?: RequestParams,
-  ): RequestParams {
+  protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
     return {
       ...this.baseApiParams,
       ...params1,
@@ -4346,9 +4310,7 @@ export class HttpClient<SecurityDataType = unknown> {
     };
   }
 
-  protected createAbortSignal = (
-    cancelToken: CancelToken,
-  ): AbortSignal | undefined => {
+  protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
     if (this.abortControllers.has(cancelToken)) {
       const abortController = this.abortControllers.get(cancelToken);
       if (abortController) {
@@ -4392,26 +4354,15 @@ export class HttpClient<SecurityDataType = unknown> {
     const payloadFormatter = this.contentFormatters[type || ContentType.Json];
     const responseFormat = format || requestParams.format;
 
-    return this.customFetch(
-      `${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`,
-      {
-        ...requestParams,
-        headers: {
-          ...(requestParams.headers || {}),
-          ...(type && type !== ContentType.FormData
-            ? { "Content-Type": type }
-            : {}),
-        },
-        signal:
-          (cancelToken
-            ? this.createAbortSignal(cancelToken)
-            : requestParams.signal) || null,
-        body:
-          typeof body === "undefined" || body === null
-            ? null
-            : payloadFormatter(body),
+    return this.customFetch(`${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`, {
+      ...requestParams,
+      headers: {
+        ...(requestParams.headers || {}),
+        ...(type && type !== ContentType.FormData ? { "Content-Type": type } : {}),
       },
-    ).then(async (response) => {
+      signal: (cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal) || null,
+      body: typeof body === "undefined" || body === null ? null : payloadFormatter(body),
+    }).then(async (response) => {
       const r = response.clone() as HttpResponse<T, E>;
       r.data = null as unknown as T;
       r.error = null as unknown as E;
@@ -4452,9 +4403,7 @@ export class HttpClient<SecurityDataType = unknown> {
  *
  * CABINET API
  */
-export class Api<
-  SecurityDataType extends unknown,
-> extends HttpClient<SecurityDataType> {
+export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   api = {
     /**
      * @description Получение списка организаций, для предоставления им доступа к фильмам
@@ -4477,11 +4426,7 @@ export class Api<
      * @name ReginfoShareFilmsPut
      * @request PUT:/api/v1/reginfo/{orgId}/sharefilms
      */
-    reginfoShareFilmsPut: (
-      orgId: number,
-      data: RegInfoShareDto[],
-      params: RequestParams = {},
-    ) =>
+    reginfoShareFilmsPut: (orgId: number, data: RegInfoShareDto[], params: RequestParams = {}) =>
       this.request<void, ErrorMessageResponse>({
         path: `/api/v1/reginfo/${orgId}/sharefilms`,
         method: "PUT",
@@ -4511,11 +4456,7 @@ export class Api<
      * @name OrgsRptUsersPut
      * @request PUT:/api/v1/orgs/rptuser/{orgId}
      */
-    orgsRptUsersPut: (
-      orgId: number,
-      data: OrgRptUser,
-      params: RequestParams = {},
-    ) =>
+    orgsRptUsersPut: (orgId: number, data: OrgRptUser, params: RequestParams = {}) =>
       this.request<OrgRptUser, ErrorMessageResponse>({
         path: `/api/v1/orgs/rptuser/${orgId}`,
         method: "PUT",
@@ -4568,11 +4509,7 @@ export class Api<
      * @name OrgsHoldingPut
      * @request PUT:/api/v1/orgs/holding/{id}
      */
-    orgsHoldingPut: (
-      id: number,
-      data: OrgHolding,
-      params: RequestParams = {},
-    ) =>
+    orgsHoldingPut: (id: number, data: OrgHolding, params: RequestParams = {}) =>
       this.request<OrgHolding, ErrorMessageResponse>({
         path: `/api/v1/orgs/holding/${id}`,
         method: "PUT",
@@ -4603,11 +4540,7 @@ export class Api<
      * @name OrgsCinemaPut
      * @request PUT:/api/v1/orgs/cinema/{orgId}
      */
-    orgsCinemaPut: (
-      orgId: number,
-      data: OrgCinema,
-      params: RequestParams = {},
-    ) =>
+    orgsCinemaPut: (orgId: number, data: OrgCinema, params: RequestParams = {}) =>
       this.request<OrgCinema, ErrorMessageResponse>({
         path: `/api/v1/orgs/cinema/${orgId}`,
         method: "PUT",
@@ -4650,11 +4583,7 @@ export class Api<
      * @name OrgsCinemaShowRoomPut
      * @request PUT:/api/v1/orgs/cinema/showrooms/{id}
      */
-    orgsCinemaShowRoomPut: (
-      id: number,
-      data: ShowRoomData,
-      params: RequestParams = {},
-    ) =>
+    orgsCinemaShowRoomPut: (id: number, data: ShowRoomData, params: RequestParams = {}) =>
       this.request<ShowRoomData, ErrorMessageResponse>({
         path: `/api/v1/orgs/cinema/showrooms/${id}`,
         method: "PUT",
@@ -4710,11 +4639,7 @@ export class Api<
      * @name NsiTicketTypesPut
      * @request PUT:/api/v1/nsi/tickettypes/{id}
      */
-    nsiTicketTypesPut: (
-      id: number,
-      data: TicketTypeDto,
-      params: RequestParams = {},
-    ) =>
+    nsiTicketTypesPut: (id: number, data: TicketTypeDto, params: RequestParams = {}) =>
       this.request<TicketTypeDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/tickettypes/${id}`,
         method: "PUT",
@@ -4759,11 +4684,7 @@ export class Api<
      * @name NsiSwVendorsPut
      * @request PUT:/api/v1/nsi/softvendors/{id}
      */
-    nsiSwVendorsPut: (
-      id: number,
-      data: SoftVendorDto,
-      params: RequestParams = {},
-    ) =>
+    nsiSwVendorsPut: (id: number, data: SoftVendorDto, params: RequestParams = {}) =>
       this.request<SoftVendorDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/softvendors/${id}`,
         method: "PUT",
@@ -4808,11 +4729,7 @@ export class Api<
      * @name NsiShowFormatsPut
      * @request PUT:/api/v1/nsi/showformats/{id}
      */
-    nsiShowFormatsPut: (
-      id: number,
-      data: ShowFormatDto,
-      params: RequestParams = {},
-    ) =>
+    nsiShowFormatsPut: (id: number, data: ShowFormatDto, params: RequestParams = {}) =>
       this.request<ShowFormatDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/showformats/${id}`,
         method: "PUT",
@@ -4905,11 +4822,7 @@ export class Api<
      * @name NsiPuSetReleaseDatePut
      * @request PUT:/api/v1/nsi/pus/{id}/release-date
      */
-    nsiPuSetReleaseDatePut: (
-      id: number,
-      data: PuReleaseDateDto,
-      params: RequestParams = {},
-    ) =>
+    nsiPuSetReleaseDatePut: (id: number, data: PuReleaseDateDto, params: RequestParams = {}) =>
       this.request<PuReleaseDateDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/pus/${id}/release-date`,
         method: "PUT",
@@ -4940,11 +4853,7 @@ export class Api<
      * @name NsiPuDistribsPut
      * @request PUT:/api/v1/nsi/pus/{id}/distribs
      */
-    nsiPuDistribsPut: (
-      id: number,
-      data: PuDistrbDto,
-      params: RequestParams = {},
-    ) =>
+    nsiPuDistribsPut: (id: number, data: PuDistrbDto, params: RequestParams = {}) =>
       this.request<PuDistrbDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/pus/${id}/distribs`,
         method: "PUT",
@@ -4975,11 +4884,7 @@ export class Api<
      * @name NsiPuReasonsPut
      * @request PUT:/api/v1/nsi/pureasons/{id}
      */
-    nsiPuReasonsPut: (
-      id: number,
-      data: PuReasonDto,
-      params: RequestParams = {},
-    ) =>
+    nsiPuReasonsPut: (id: number, data: PuReasonDto, params: RequestParams = {}) =>
       this.request<PuReasonDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/pureasons/${id}`,
         method: "PUT",
@@ -5024,11 +4929,7 @@ export class Api<
      * @name NsiOwnershipsPut
      * @request PUT:/api/v1/nsi/ownerships/{id}
      */
-    nsiOwnershipsPut: (
-      id: number,
-      data: OwnershipDto,
-      params: RequestParams = {},
-    ) =>
+    nsiOwnershipsPut: (id: number, data: OwnershipDto, params: RequestParams = {}) =>
       this.request<OwnershipDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/ownerships/${id}`,
         method: "PUT",
@@ -5073,11 +4974,7 @@ export class Api<
      * @name NsiFutureReleasesPut
      * @request PUT:/api/v1/nsi/futurereleases/{id}
      */
-    nsiFutureReleasesPut: (
-      id: number,
-      data: FutureReleaseDto,
-      params: RequestParams = {},
-    ) =>
+    nsiFutureReleasesPut: (id: number, data: FutureReleaseDto, params: RequestParams = {}) =>
       this.request<FutureReleaseDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/futurereleases/${id}`,
         method: "PUT",
@@ -5153,11 +5050,7 @@ export class Api<
      * @name NsiEqpVendorsPut
      * @request PUT:/api/v1/nsi/eqpvendors/{id}
      */
-    nsiEqpVendorsPut: (
-      id: number,
-      data: EqpVendorDto,
-      params: RequestParams = {},
-    ) =>
+    nsiEqpVendorsPut: (id: number, data: EqpVendorDto, params: RequestParams = {}) =>
       this.request<EqpVendorDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/eqpvendors/${id}`,
         method: "PUT",
@@ -5202,11 +5095,7 @@ export class Api<
      * @name NsiEqpTypesPut
      * @request PUT:/api/v1/nsi/eqptypes/{id}
      */
-    nsiEqpTypesPut: (
-      id: number,
-      data: EqpTypeDto,
-      params: RequestParams = {},
-    ) =>
+    nsiEqpTypesPut: (id: number, data: EqpTypeDto, params: RequestParams = {}) =>
       this.request<EqpTypeDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/eqptypes/${id}`,
         method: "PUT",
@@ -5298,11 +5187,7 @@ export class Api<
      * @name NsiCityPopulationsPut
      * @request PUT:/api/v1/nsi/citypopulations/{id}
      */
-    nsiCityPopulationsPut: (
-      id: string,
-      data: CityPopulationDto,
-      params: RequestParams = {},
-    ) =>
+    nsiCityPopulationsPut: (id: string, data: CityPopulationDto, params: RequestParams = {}) =>
       this.request<CityPopulationDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/citypopulations/${id}`,
         method: "PUT",
@@ -5401,11 +5286,7 @@ export class Api<
      * @name OrgsRptUsersFilmPermsPost
      * @request POST:/api/v1/orgs/rptuser/{orgId}/filmperms
      */
-    orgsRptUsersFilmPermsPost: (
-      orgId: number,
-      data: FilmPermissionListData,
-      params: RequestParams = {},
-    ) =>
+    orgsRptUsersFilmPermsPost: (orgId: number, data: FilmPermissionListData, params: RequestParams = {}) =>
       this.request<FilmPermissionListData, ErrorMessageResponse>({
         path: `/api/v1/orgs/rptuser/${orgId}/filmperms`,
         method: "POST",
@@ -5486,11 +5367,7 @@ export class Api<
      * @name OrgsCinemaShowRoomPost
      * @request POST:/api/v1/orgs/cinema/{orgId}/showrooms
      */
-    orgsCinemaShowRoomPost: (
-      orgId: number,
-      data: ShowRoomData,
-      params: RequestParams = {},
-    ) =>
+    orgsCinemaShowRoomPost: (orgId: number, data: ShowRoomData, params: RequestParams = {}) =>
       this.request<ShowRoomData, ErrorMessageResponse>({
         path: `/api/v1/orgs/cinema/${orgId}/showrooms`,
         method: "POST",
@@ -5521,11 +5398,7 @@ export class Api<
      * @name OrgsCinemaNotesPut
      * @request POST:/api/v1/orgs/cinema/{orgId}/notes
      */
-    orgsCinemaNotesPut: (
-      orgId: number,
-      data: NoteListItem,
-      params: RequestParams = {},
-    ) =>
+    orgsCinemaNotesPut: (orgId: number, data: NoteListItem, params: RequestParams = {}) =>
       this.request<NoteListItem, ErrorMessageResponse>({
         path: `/api/v1/orgs/cinema/${orgId}/notes`,
         method: "POST",
@@ -5753,10 +5626,7 @@ export class Api<
      * @name NsiFutureReleasesPost
      * @request POST:/api/v1/nsi/futurereleases
      */
-    nsiFutureReleasesPost: (
-      data: FutureReleaseDto,
-      params: RequestParams = {},
-    ) =>
+    nsiFutureReleasesPost: (data: FutureReleaseDto, params: RequestParams = {}) =>
       this.request<FutureReleaseDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/futurereleases`,
         method: "POST",
@@ -5905,10 +5775,7 @@ export class Api<
      * @name NsiCityPopulationsPost
      * @request POST:/api/v1/nsi/citypopulations
      */
-    nsiCityPopulationsPost: (
-      data: CityPopulationDto,
-      params: RequestParams = {},
-    ) =>
+    nsiCityPopulationsPost: (data: CityPopulationDto, params: RequestParams = {}) =>
       this.request<CityPopulationDto, ErrorMessageResponse>({
         path: `/api/v1/nsi/citypopulations`,
         method: "POST",
@@ -5925,10 +5792,7 @@ export class Api<
      * @name FilmsregDoResetPost
      * @request POST:/api/v1/filmsreg/doreset
      */
-    filmsregDoResetPost: (
-      data: FilmsRegSessIdsBody,
-      params: RequestParams = {},
-    ) =>
+    filmsregDoResetPost: (data: FilmsRegSessIdsBody, params: RequestParams = {}) =>
       this.request<void, ErrorMessageResponse>({
         path: `/api/v1/filmsreg/doreset`,
         method: "POST",
@@ -5944,11 +5808,7 @@ export class Api<
      * @name FilmsregRegistryDoManualPost
      * @request POST:/api/v1/filmsreg/domanual/{id}
      */
-    filmsregRegistryDoManualPost: (
-      id: number,
-      data: FilmsRegSessIdsBody,
-      params: RequestParams = {},
-    ) =>
+    filmsregRegistryDoManualPost: (id: number, data: FilmsRegSessIdsBody, params: RequestParams = {}) =>
       this.request<void, ErrorMessageResponse>({
         path: `/api/v1/filmsreg/domanual/${id}`,
         method: "POST",
@@ -6403,10 +6263,7 @@ export class Api<
      * @name OrgsRptUsersFilmPermsFilterListGet
      * @request GET:/api/v1/orgs/rptuser/{orgId}/filmperms/filterlist
      */
-    orgsRptUsersFilmPermsFilterListGet: (
-      orgId: number,
-      params: RequestParams = {},
-    ) =>
+    orgsRptUsersFilmPermsFilterListGet: (orgId: number, params: RequestParams = {}) =>
       this.request<OrgsFilmPermissionListResponse, ErrorMessageResponse>({
         path: `/api/v1/orgs/rptuser/${orgId}/filmperms/filterlist`,
         method: "GET",
@@ -6998,57 +6855,6 @@ export class Api<
       }),
 
     /**
-     * @description Получение списка кинрозалов для кинотеатра
-     *
-     * @tags Список кинозалов
-     * @name GetSRooms
-     * @request GET:/api/v1/loo/srooms
-     */
-    getSRooms: (
-      query: {
-        /**
-         * ID кинотеатра
-         * @format int64
-         */
-        org_id: number;
-        /** Строка для фильтрации */
-        filter?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<ListResponse, ErrorMessageResponse>({
-        path: `/api/v1/loo/srooms`,
-        method: "GET",
-        query: query,
-        ...params,
-      }),
-
-    /**
-     * @description Получение списка фильмов для ComboBox
-     *
-     * @tags Список фильмов
-     * @name GetFilms
-     * @request GET:/api/v1/loo/films
-     */
-    getFilms: (
-      query?: {
-        /**
-         * Строка для фильтрации
-         * @format int64
-         */
-        id?: number;
-        filter?: string;
-      },
-      params: RequestParams = {},
-    ) =>
-      this.request<ListResponse, ErrorMessageResponse>({
-        path: `/api/v1/loo/films`,
-        method: "GET",
-        query: query,
-        ...params,
-      }),
-
-    /**
      * @description Получение данных по протоколам загрузки
      *
      * @tags API Статистика по загрузке данных v1
@@ -7060,7 +6866,7 @@ export class Api<
         /**
          * Страница
          * @format int32
-         * @default 0
+         * @default 1
          */
         page: number;
         /**
@@ -7069,6 +6875,11 @@ export class Api<
          * @default 10
          */
         limit: number;
+        /**
+         * ID кинотеатра
+         * @format int32
+         */
+        force_org_id: number;
         /**
          * Дата начала
          * @format date-time
@@ -7322,27 +7133,26 @@ export class Api<
          * ID кинотеатра
          * @format int32
          */
-        org_id: number;
+        force_org_id: number;
         /**
          * Дата начала
          * @format date-time
          */
-        show_date_from: string;
+        reg_from: string;
         /**
          * Дата окончания
          * @format date-time
          */
-        show_date_to: string;
-        /**
-         * Id ПУ
-         * @format int64
-         */
-        selected_pu_id?: number;
+        reg_to: string;
+        /** Строка поиска в названии фильма */
+        film?: string;
         /**
          * ID кинозала
          * @format int64
          */
         sroom_id?: number;
+        /** Сортировка */
+        sort?: string;
       },
       params: RequestParams = {},
     ) =>

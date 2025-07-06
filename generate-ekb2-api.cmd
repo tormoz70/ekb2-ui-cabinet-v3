@@ -1,0 +1,1 @@
+npx swagger-typescript-api generate -p http://localhost:8087/v3/api-docs -o ./src -n ekb2-api.ts
