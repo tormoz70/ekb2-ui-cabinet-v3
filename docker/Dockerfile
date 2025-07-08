@@ -1,10 +1,6 @@
-FROM container-registry.oracle.com/graalvm/jdk:17-ol9
+FROM nginx
 
-VOLUME /tmp
+COPY build /etc/nginx/sites-available/default
 
-COPY target/${artifactId}-${version}.jar /app/app.jar
-COPY extra /app/
-COPY docker/entrypoint.sh /app/
-
-RUN ["chmod", "+x", "/app/entrypoint.sh"]
-ENTRYPOINT ["/app/entrypoint.sh"]
+EXPOSE 80/tcp
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
