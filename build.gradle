@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+    }
+}
+
+apply plugin:'base'
+
+
+task buildApp(type:Exec) {
+    doFirst {
+        description 'Build the App!'
+        workingDir "${projectDir}"
+        ignoreExitValue = true
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            commandLine("cmd", "/c", "npm", "run", "build")
+        } else {
+            commandLine("sh", "/c", "npm", "run", "build")
+        }
+    }
+}
+
+build.finalizedBy(buildApp)
