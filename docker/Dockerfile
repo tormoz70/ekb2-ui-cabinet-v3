@@ -1,6 +1,10 @@
 FROM nginx
 
-COPY build /etc/nginx/sites-available/default
+COPY build/ /ekb-ui
+COPY extra/nginx.conf /etc/nginx/nginx.conf
 
-EXPOSE 80/tcp
+EXPOSE 8080/tcp
+
+RUN chmod +x /usr/sbin/nginx
+
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]

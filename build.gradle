@@ -22,4 +22,11 @@ task buildApp(type:Exec) {
     }
 }
 
-build.finalizedBy(buildApp)
+//task perepareDockerfile(type: Copy) {
+//    from (docker)
+//}
+
+
+build {
+    finalizedBy(buildApp)
+}
