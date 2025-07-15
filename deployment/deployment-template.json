@@ -10,12 +10,32 @@
       "Env": [
         "STAND=${{STAND_NAME}}",
         "APP_NAME=${{APP_NAME::ekb-ui}}",
-        "INNER_NETWORK_MASK=10.0.10",
-        "CONTAINER_PORT=${{CONTAINER_PORT::8087}}",
-        HTTP_SERVER_PORT=8085
-        HTTP_PUBLISHED_PORT=9097
-
+        "HTTP_SERVER_PORT=${{HTTP_SERVER_PORT::8087}}"
       ]
-    }
+    },
+    "LogDriver": {
+      "Name": "json-file",
+      "Options": {
+        "max-file": "5",
+        "max-size": "10M"
+      }
+    },
+    "Networks": [
+      {
+        "Target": "ekb2_net"
+      }
+    ]
+  },
+  "EndpointSpec": {
+    "Mode": "vip",
+    "Ports": [
+      {
+        "Name": "HTTP",
+        "Protocol": "tcp",
+        "TargetPort": "$UNQUOTE{{HTTP_SERVER_PORT::8087}}",
+        "PublishedPort": "$UNQUOTE{{HTTP_PUBLISHED_PORT}}",
+        "PublishMode": "ingress"
+      }
+    ]
   }
 }
