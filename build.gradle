@@ -17,7 +17,7 @@ task buildApp(type:Exec) {
         if (System.getProperty("os.name").toLowerCase().contains("windows")) {
             commandLine("cmd", "/c", "npm", "run", "build")
         } else {
-            commandLine("sh", "/c", "npm", "run", "build")
+            commandLine("npm", "run", "build")
         }
     }
 }
