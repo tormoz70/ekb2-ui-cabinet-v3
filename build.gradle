@@ -9,14 +9,14 @@ buildscript {
 apply plugin:'base'
 
 
-task npmInstall(type:Exec) {
+task yarnInstall(type:Exec) {
     description 'Install packages!'
     workingDir "${projectDir}"
     ignoreExitValue = true
     if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-        commandLine("cmd", "/c", "npm", "install")
+        commandLine("cmd", "/c", "yarn", "install")
     } else {
-        commandLine("npm", "install")
+        commandLine("yarn", "install")
     }
 }
 
@@ -37,6 +37,6 @@ task npmBuild(type:Exec) {
 
 
 build {
-    finalizedBy npmInstall
+    finalizedBy yarnInstall
     finalizedBy npmBuild
 }
