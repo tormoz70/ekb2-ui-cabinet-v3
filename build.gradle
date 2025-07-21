@@ -9,17 +9,25 @@ buildscript {
 apply plugin:'base'
 
 
-task buildApp(type:Exec) {
-    doFirst {
-        description 'Build the App!'
-        workingDir "${projectDir}"
-        ignoreExitValue = true
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            commandLine("cmd", "/c", "npm", "run", "build")
-        } else {
-            commandLine("npm", "install")
-            commandLine("npm", "run", "build")
-        }
+task npmInstall(type:Exec) {
+    description 'Install packages!'
+    workingDir "${projectDir}"
+    ignoreExitValue = true
+    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        commandLine("cmd", "/c", "npm", "install")
+    } else {
+        commandLine("npm", "install")
+    }
+}
+
+task npmBuild(type:Exec) {
+    description 'Build the App!'
+    workingDir "${projectDir}"
+    ignoreExitValue = true
+    if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+        commandLine("cmd", "/c", "npm", "run", "build")
+    } else {
+        commandLine("npm", "run", "build")
     }
 }
 
@@ -29,5 +37,6 @@ task buildApp(type:Exec) {
 
 
 build {
-    finalizedBy(buildApp)
+    finalizedBy npmInstall
+    finalizedBy npmBuild
 }
