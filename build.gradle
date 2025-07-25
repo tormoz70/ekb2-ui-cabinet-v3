@@ -1,4 +1,9 @@
 buildscript {
+    ext {
+        devopsDistrPackage = "ru.fk.ekb2.ui-cabinet-v3"
+        devopsArtifactId = "ekb2-ui-cabinet"
+        devopsArtifactVersion = "3.0"
+    }
     repositories {
         mavenCentral()
     }
